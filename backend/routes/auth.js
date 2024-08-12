@@ -1,12 +1,17 @@
 const express = require('express');
-const router = express.Router();
-const authController = require('../controllers/authController');
-const auth = require('../middleware/auth');
+const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
-router.post('/register', authController.register);
-router.post('/login', authController.login);
-router.get('/user', auth, authController.getUser);
-router.put('/profile', auth, authController.updateProfile);
-router.post('/refresh', authController.refreshToken);
+const router = express.Router();
+
+router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+
+router.get('/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    (req, res) => {
+        const token = jwt.sign({ id: req.user.id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.redirect(`http://localhost:3000/login?token=${token}`);
+    }
+);
 
 module.exports = router;

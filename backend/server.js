@@ -32,19 +32,14 @@ app.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/' }),
     (req, res) => {
         // Successful authentication, redirect home with token.
-        // res.redirect('/?token=' + req.user.token);
-        res.redirect('/profile');
+        res.redirect('/?token=' + req.user.token);
+        // res.redirect('/profile');
     }
 );
 
 app.get('/', (req, res) => {
     res.send('Home Page');
 });
-
-// Connect to MongoDB
-// mongoose.connect(process.env.MONGODB_URI)
-//     .then(() => console.log('Connected to MongoDB'))
-//     .catch((err) => console.error('MongoDB connection error:', err));
 
 connectDB();
 

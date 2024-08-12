@@ -17,10 +17,10 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    refreshToken: {
-        type: String,
-        // required: true
-    }
+    groupNumber: {
+        type: String
+    },
+
 });
 
 const User = mongoose.model('User', userSchema);

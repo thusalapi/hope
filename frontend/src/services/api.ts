@@ -21,3 +21,12 @@ export const getProfile = async () => {
   const response = await api.get("/profile");
   return response.data;
 };
+
+export const updateProfile = async (profileData: {
+  name: string;
+  email: string;
+  groupNumber: string;
+}) => {
+  const response = await api.put("/profile", profileData);
+  return response.data;
+};

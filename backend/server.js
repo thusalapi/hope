@@ -1,19 +1,9 @@
-const express = require('express');
-const passport = require('./config/passport');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const session = require('express-session');
-const authRoutes = require('./routes/auth');
-const profileRoutes = require('./routes/profile');
-const dotenv = require('dotenv');
+const app = require('./app');
 const connectDB = require('./config/database');
 
-
-dotenv.config();
-
-const app = express();
 const PORT = process.env.PORT || 5000;
 
+<<<<<<< Updated upstream
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -46,6 +36,8 @@ app.get('/', (req, res) => {
 //     .then(() => console.log('Connected to MongoDB'))
 //     .catch((err) => console.error('MongoDB connection error:', err));
 
+=======
+>>>>>>> Stashed changes
 connectDB();
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

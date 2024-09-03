@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 exports.generateToken = (user) => {
     return jwt.sign(
-        { user: { id: user._id } },
+        { id: user._id },
         process.env.JWT_SECRET,
         { expiresIn: '1h' }
     );
@@ -10,7 +10,7 @@ exports.generateToken = (user) => {
 
 exports.generateRefreshToken = (user) => {
     return jwt.sign(
-        { user: { id: user._id } },
+        { id: user._id },
         process.env.REFRESH_TOKEN_SECRET,
         { expiresIn: '7d' }
     );
@@ -19,8 +19,9 @@ exports.generateRefreshToken = (user) => {
 exports.refreshToken = async (refreshToken) => {
     try {
         const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-        return this.generateToken({ _id: decoded.user.id });
+        return this.generateToken({ _id: decoded.id });
     } catch (error) {
+        console.error('Error refreshing token:', error);
         return null;
     }
 };

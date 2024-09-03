@@ -1,4 +1,4 @@
-const ActivityEvaluation = require('../models/ActivityEvaluation');
+const ActivityEvaluation = require('../models/Grade');
 
 // Get an evaluation by ID
 const getEvaluation = async (req, res) => {

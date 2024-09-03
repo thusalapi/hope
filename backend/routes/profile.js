@@ -1,16 +1,12 @@
 const express = require('express');
 const { authenticateToken } = require('../middleware/auth');
-const User = require('../models/User');
+const { getProfile, createProfile, updateProfile, deleteProfile } = require('../controllers/profileController');
 
 const router = express.Router();
 
-router.get('/', authenticateToken, async (req, res) => {
-    try {
-        const user = await User.findById(req.user.id);
-        res.json(user);
-    } catch (error) {
-        res.status(500).json({ message: 'Error fetching profile' });
-    }
-});
+router.get('/', authenticateToken, getProfile);
+router.post('/', authenticateToken, createProfile);
+router.put('/', authenticateToken, updateProfile);
+router.delete('/', authenticateToken, deleteProfile);
 
 module.exports = router;

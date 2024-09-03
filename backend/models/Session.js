@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 const { z } = require('zod');
 
 const sessionSchemaZod = z.object({
-    title: z.string().nonempty(),
+    title: z.string().required(),
     description: z.string().optional(),
-    instructorId: z.string().nonempty(),
-    groupIds: z.array(z.string().nonempty()),
-    labSheet: z.array(z.string().nonempty()).nonempty(), // Array of questions
-    date: z.string().nonempty(), 
-    startTime: z.string().nonempty(), 
+    instructorId: z.string().required(),
+    groupIds: z.array(z.string().required()),
+    labSheet: z.array(z.string().required()).nonempty(),
+    date: z.string().required(), 
+    startTime: z.string().required(), 
     duration: z.number().positive(), 
 });
 

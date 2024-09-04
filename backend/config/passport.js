@@ -1,6 +1,7 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
+const Student = require('../models/Student');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -8,27 +9,29 @@ dotenv.config();
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "/auth/google/callback",
+    callbackURL: "http://localhost:5000/auth/google/callback"
 }, async (accessToken, refreshToken, profile, done) => {
     try {
-        let user = await User.findOne({ googleId: profile.id });
+        let user = await User.findOne({ email: profile.emails[0].value });
+
         if (!user) {
-            user = new User({
-                googleId: profile.id,
+            user = await User.create({
+                userID: profile.id,
                 name: profile.displayName,
                 email: profile.emails[0].value,
-                accessToken,
-                refreshToken,
+                role: 'Student',
             });
-            await user.save();
-        } else {
-            user.accessToken = accessToken;
-            user.refreshToken = refreshToken;
-            await user.save();
+
+            await Student.create({
+                user: user._id, // Reference the ObjectId from User
+                batch: 'Not Assigned', // Placeholder value
+                subGroup: 'Not Assigned', // Placeholder value
+            });
         }
-        done(null, user);
+
+        return done(null, user);
     } catch (error) {
-        done(error, null);
+        return done(error, undefined);
     }
 }));
 

@@ -1,38 +1,21 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
 
 const studentSchema = new mongoose.Schema({
     user: {
-        userID: {
-            type: String,
-            required: true
-        },
-        name: {
-            type: String,
-            required: true
-        },
-        email: {
-            type: String,
-            required: true
-        },
-        role: {
-            type: String,
-            required: true,
-            default: 'Student'
-        }
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        unique: true
     },
     batch: {
         type: String,
-        default: 'Not Assigned', // Placeholder value
-        required: true
+        required: false
     },
-    subGroup: {
+    subgroup: {
         type: String,
-        default: 'Not Assigned', // Placeholder value
-        required: true
-    },
+        required: false
+    }
 });
 
 const Student = mongoose.model('Student', studentSchema);
-
 module.exports = Student;

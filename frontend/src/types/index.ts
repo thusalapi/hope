@@ -1,14 +1,14 @@
 export interface User {
-  id: string;
+  userID: string;
   name: string;
   email: string;
   groupNumber: string;
 }
 
 export interface Student {
-  batch: string;
+  userID: string;
+  name: string;
   subGroup: string;
   email: string;
-  groupNumber: string;
-  name: string;
+  batch: string;
 }

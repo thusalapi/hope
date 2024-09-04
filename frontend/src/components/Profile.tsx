@@ -36,6 +36,7 @@ const Profile: React.FC = () => {
   };
 
   const handleSave = async (values: {
+    userID: string;
     name: string;
     email: string;
     batch: string;
@@ -85,6 +86,7 @@ const Profile: React.FC = () => {
                 {editing ? (
                   <Formik
                     initialValues={{
+                      userID: user.userID,
                       name: user.name,
                       email: user.email,
                       batch: (user as Student)?.batch || "",

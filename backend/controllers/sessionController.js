@@ -13,7 +13,7 @@ const createSession = async (req, res) => {
 
 const getSessions = async (req, res) => {
     try {
-        const sessions = await Session.find(req.query); // Optional filtering
+        const sessions = await Session.find(req.query);
         res.status(200).json(sessions);
     } catch (error) {
         res.status(400).json({ message: error.message });

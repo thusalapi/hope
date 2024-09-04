@@ -25,8 +25,17 @@ export const getProfile = async () => {
 export const updateProfile = async (profileData: {
   name: string;
   email: string;
-  groupNumber: string;
+  batch?: string;
+  subGroup?: string;
 }) => {
   const response = await api.put("/profile", profileData);
+  return response.data;
+};
+
+export const updateStudentProfile = async (studentData: {
+  batch: string;
+  subGroup: string;
+}) => {
+  const response = await api.put("/profile", studentData);
   return response.data;
 };

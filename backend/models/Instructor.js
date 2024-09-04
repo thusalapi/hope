@@ -18,7 +18,6 @@ const instructorSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    // Additional instructor-specific fields
 });
 
 const Instructor = mongoose.model('Instructor', instructorSchema);

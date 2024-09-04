@@ -1,82 +1,76 @@
 const User = require('../models/User');
 const Student = require('../models/Student');
+const Instructor = require('../models/Instructor');
 
 const getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
         if (!user) {
-            console.error('User not found in the User collection');
             return res.status(404).json({ message: 'User not found' });
         }
-
-        let profile;
-        if (user.role === 'Student') {
-            profile = await Student.findOne({ 'user.userID': user.userID });
-        } else if (user.role === 'Instructor') {
-            profile = await Instructor.findOne({ 'user.userID': user.userID });
-        }
-
-        if (!profile) {
-            console.error('Profile not found for user with role:', user.role);
-            return res.status(404).json({ message: 'Profile not found' });
-        }
-
-        res.json(profile);
+        res.json(user);
     } catch (error) {
-        console.error('Error fetching profile:', error);
         res.status(500).json({ message: 'Error fetching profile' });
     }
 };
-
 const createProfile = async (req, res) => {
     try {
         const { name, email, batch, subGroup } = req.body;
 
-        let user = await User.create({
+        const newUser = new User({
+            userID: Date.now().toString(),
             name,
             email,
             role: 'Student'
         });
+        await newUser.save();
 
-        const student = await Student.create({
-            user: user._id,
+        const newStudent = new Student({
+            user: {
+                userID: newUser.userID,
+                name: newUser.name,
+                email: newUser.email,
+                role: newUser.role
+            },
             batch,
             subGroup
         });
+        await newStudent.save();
 
-        res.status(201).json({ user, student });
+        res.status(201).json(newStudent);
     } catch (error) {
+        console.error('Error creating profile:', error);
         res.status(500).json({ message: 'Error creating profile' });
     }
 };
-
 const updateProfile = async (req, res) => {
     try {
         const { name, email, batch, subGroup } = req.body;
-        const user = await User.findByIdAndUpdate(req.user.id, { name, email }, { new: true });
-
-        if (!user) {
+        const updatedUser = await User.findByIdAndUpdate(
+            req.user.id,
+            { name, email, batch, subGroup },
+            { new: true }
+        );
+        if (!updatedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
-
-        const student = await Student.findOneAndUpdate({ user: req.user.id }, { batch, subGroup }, { new: true });
-
-        res.json({ user, student });
+        res.json(updatedUser);
     } catch (error) {
         res.status(500).json({ message: 'Error updating profile' });
     }
 };
-
 const deleteProfile = async (req, res) => {
     try {
-        const user = await User.findByIdAndDelete(req.user.id);
-        if (!user) {
+        const deletedUser = await User.findOneAndDelete({ userID: req.user.userID });
+        if (!deletedUser) {
             return res.status(404).json({ message: 'User not found' });
         }
 
-        await Student.findOneAndDelete({ user: req.user.id });
+        await Student.findOneAndDelete({ 'user.userID': deletedUser.userID });
+
         res.json({ message: 'Profile deleted successfully' });
     } catch (error) {
+        console.error('Error deleting profile:', error);
         res.status(500).json({ message: 'Error deleting profile' });
     }
 };

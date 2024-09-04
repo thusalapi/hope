@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile, updateProfile } from "../services/api";
-import { User } from "../types";
+import { User, Student } from "../types";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
 const Profile: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [user, setUser] = useState<User | Student | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
@@ -38,7 +38,8 @@ const Profile: React.FC = () => {
   const handleSave = async (values: {
     name: string;
     email: string;
-    groupNumber: string;
+    batch: string;
+    subGroup: string;
   }) => {
     try {
       const updatedUser = await updateProfile(values);
@@ -66,7 +67,8 @@ const Profile: React.FC = () => {
   const validationSchema = z.object({
     name: z.string().nonempty("Required"),
     email: z.string().email("Invalid email address").nonempty("Required"),
-    groupNumber: z.string().nonempty("Required"),
+    batch: z.string().nonempty("Required"),
+    subGroup: z.string().nonempty("Required"),
   });
 
   return (
@@ -85,7 +87,8 @@ const Profile: React.FC = () => {
                     initialValues={{
                       name: user.name,
                       email: user.email,
-                      groupNumber: user.groupNumber || "",
+                      batch: (user as Student)?.batch || "",
+                      subGroup: (user as Student)?.subGroup || "",
                     }}
                     validationSchema={toFormikValidationSchema(
                       validationSchema
@@ -134,18 +137,37 @@ const Profile: React.FC = () => {
                       <div className="mt-2">
                         <label
                           className="block text-gray-700 text-sm font-bold mb-2"
-                          htmlFor="groupNumber"
+                          htmlFor="batch"
                         >
-                          Group Number
+                          Batch
                         </label>
                         <Field
                           type="text"
-                          id="groupNumber"
-                          name="groupNumber"
+                          id="batch"
+                          name="batch"
                           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         />
                         <ErrorMessage
-                          name="groupNumber"
+                          name="batch"
+                          component="div"
+                          className="text-red-500 text-xs italic"
+                        />
+                      </div>
+                      <div className="mt-2">
+                        <label
+                          className="block text-gray-700 text-sm font-bold mb-2"
+                          htmlFor="subGroup"
+                        >
+                          Sub Group
+                        </label>
+                        <Field
+                          type="text"
+                          id="subGroup"
+                          name="subGroup"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                        <ErrorMessage
+                          name="subGroup"
                           component="div"
                           className="text-red-500 text-xs italic"
                         />
@@ -165,7 +187,10 @@ const Profile: React.FC = () => {
                     <p className="mt-6 text-xl">Name: {user.name}</p>
                     <p className="mt-2 text-xl">Email: {user.email}</p>
                     <p className="mt-2 text-xl">
-                      Group Number: {user.groupNumber}
+                      Batch: {(user as Student).batch}
+                    </p>
+                    <p className="mt-2 text-xl">
+                      Sub Group: {(user as Student).subGroup}
                     </p>
                     <div className="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
                       <button

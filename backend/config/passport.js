@@ -15,15 +15,22 @@ passport.use(new GoogleStrategy({
         let user = await User.findOne({ email: profile.emails[0].value });
 
         if (!user) {
+            // Create the user first
             user = await User.create({
-                userID: profile.id,
+                userID: profile.id, // Ensure userID is set
                 name: profile.displayName,
                 email: profile.emails[0].value,
-                role: 'Student',
+                role: 'Student', // Set default role as Student
             });
 
+            // Now create the Student profile and embed the user data
             await Student.create({
-                user: user._id, // Reference the ObjectId from User
+                user: {
+                    userID: user.userID,
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                },
                 batch: 'Not Assigned', // Placeholder value
                 subGroup: 'Not Assigned', // Placeholder value
             });

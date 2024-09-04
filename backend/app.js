@@ -4,6 +4,7 @@ const cors = require('cors');
 const session = require('express-session');
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
+const sessionRoutes = require('./routes/sessionRoutes');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -20,6 +21,7 @@ app.use(passport.session());
 // Routes
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
+app.use('/session', sessionRoutes);
 
 app.get('/', (req, res) => {
     res.send('Home Page');

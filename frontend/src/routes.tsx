@@ -6,6 +6,7 @@ import {
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
+import SessionForm from "./components/SessionForm";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
         <Profile />
       </ProtectedRoute>
     ),
+  },
+  {
+    path: "/sessionForm",
+    element: <SessionForm />,
   },
 ]);
 

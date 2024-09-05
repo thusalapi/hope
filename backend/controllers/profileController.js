@@ -1,14 +1,13 @@
 const User = require('../models/User');
+const { validationResult } = require('express-validator');
 
 const getProfile = async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
-        if (!user) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+        if (!user) return res.status(404).json({ message: 'User not found' });
         res.json(user);
     } catch (error) {
-        res.status(500).json({ message: 'Error fetching profile' });
+        res.status(500).json({ message: 'Error fetching profile', error: error.message });
     }
 };
 
@@ -18,6 +17,7 @@ const createProfile = async (req, res) => {
     if (!googleId || !accessToken) {
         return res.status(400).json({ message: "googleId and accessToken are required" });
     }
+
 
     try {
         const newUser = new User({
@@ -38,7 +38,7 @@ const createProfile = async (req, res) => {
 };
 
 const updateProfile = async (req, res) => {
-    const { googleId, name, email, accessToken, batch, subGroup } = req.body;
+  const { googleId, name, email, accessToken, batch, subGroup } = req.body;
 
     try {
         const updatedUser = await User.findByIdAndUpdate(req.user.id, {
@@ -64,12 +64,10 @@ const updateProfile = async (req, res) => {
 const deleteProfile = async (req, res) => {
     try {
         const deletedUser = await User.findByIdAndDelete(req.user.id);
-        if (!deletedUser) {
-            return res.status(404).json({ message: 'User not found' });
-        }
+        if (!deletedUser) return res.status(404).json({ message: 'User not found' });
         res.json({ message: 'Profile deleted successfully' });
     } catch (error) {
-        res.status(500).json({ message: 'Error deleting profile' });
+        res.status(500).json({ message: 'Error deleting profile', error: error.message });
     }
 };
 
@@ -78,4 +76,5 @@ module.exports = {
     createProfile,
     updateProfile,
     deleteProfile
+
 };

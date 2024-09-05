@@ -7,4 +7,5 @@ const router = express.Router();
 router.get('/', authenticateToken, getProfile);
 router.put('/', authenticateToken, updateProfile);
 
+
 module.exports = router;

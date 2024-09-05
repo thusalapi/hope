@@ -1,6 +1,7 @@
 export interface User {
-  id: string;
+  userID: string;
   name: string;
   email: string;
-  groupNumber: string;
+  batch: string;
+  subGroup: string;
 }

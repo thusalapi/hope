@@ -12,39 +12,52 @@ const getProfile = async (req, res) => {
 };
 
 const createProfile = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+    const { googleId, name, email, accessToken, batch, subGroup } = req.body;
+
+    if (!googleId || !accessToken) {
+        return res.status(400).json({ message: "googleId and accessToken are required" });
+    }
+
 
     try {
-        const { name, email, groupNumber } = req.body;
         const newUser = new User({
+            googleId,
             name,
             email,
-            groupNumber,
-            userId: req.user.id
+            accessToken,
+            batch,
+            subGroup
         });
-        const savedUser = await newUser.save();
-        res.status(201).json(savedUser);
+
+        await newUser.save();
+        console.log(newUser);
+        res.status(201).json(newUser);
     } catch (error) {
-        res.status(500).json({ message: 'Error creating profile', error: error.message });
+        res.status(500).json({ message: 'Error creating user', error });
     }
 };
 
 const updateProfile = async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
+  const { googleId, name, email, accessToken, batch, subGroup } = req.body;
 
     try {
-        const { name, email, groupNumber } = req.body;
-        const updatedUser = await User.findByIdAndUpdate(
-            req.user.id,
-            { name, email, groupNumber },
-            { new: true, runValidators: true }
-        );
-        if (!updatedUser) return res.status(404).json({ message: 'User not found' });
-        res.json(updatedUser);
+        const updatedUser = await User.findByIdAndUpdate(req.user.id, {
+            googleId,
+            name,
+            email,
+            accessToken,
+            batch,
+            subGroup
+        }, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        console.log(updatedUser);
+        res.status(200).json(updatedUser);
     } catch (error) {
-        res.status(500).json({ message: 'Error updating profile', error: error.message });
+        res.status(500).json({ message: 'Error updating profile', error });
     }
 };
 
@@ -62,5 +75,6 @@ module.exports = {
     getProfile,
     createProfile,
     updateProfile,
-    deleteProfile,
+    deleteProfile
+
 };

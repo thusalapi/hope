@@ -10,23 +10,22 @@ passport.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "http://localhost:5000/auth/google/callback"
 }, async (accessToken, refreshToken, profile, done) => {
-    console.log('AccessToken:', accessToken);
-    console.log('RefreshToken:', refreshToken);
     try {
-        let user = await User.findOne({ googleId: profile.id });
+        let user = await User.findOne({ email: profile.emails[0].value });
+
         if (!user) {
             user = await User.create({
-                googleId: profile.id,
+                userID: profile.id,
                 name: profile.displayName,
                 email: profile.emails[0].value,
-                accessToken: accessToken,
-                refreshToken: refreshToken
+                role: 'Student',
+                batch: 'Not Assigned',
+                subGroup: 'Not Assigned',
+                googleId: profile.id,
+                accessToken: accessToken
             });
-        } else {
-            user.accessToken = accessToken;
-            user.refreshToken = refreshToken;
-            await user.save();
         }
+
         return done(null, user);
     } catch (error) {
         return done(error, undefined);

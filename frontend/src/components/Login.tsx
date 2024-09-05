@@ -10,7 +10,7 @@ const Login: React.FC = () => {
     const token = params.get("token");
     if (token) {
       localStorage.setItem("token", token);
-      navigate("/profile");
+      navigate("/dashboard");
     }
   }, [location, navigate]);
 

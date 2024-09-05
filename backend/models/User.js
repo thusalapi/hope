@@ -1,25 +1,35 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    userID: {
+    googleId: {
         type: String,
-        required: true,
-        unique: true,
+        required: false,
     },
     name: {
         type: String,
-        required: true,
+        required: true
     },
     email: {
         type: String,
         required: true,
-        unique: true,
+        unique: true
+    },
+    accessToken: {
+        type: String,
+        required: false
+    },
+    batch: {
+        type: String,
+        required: false
+    },
+    subGroup: {
+        type: String,
+        required: false
     },
     role: {
         type: String,
-        enum: ['Student', 'Instructor'],
         default: 'Student',
-    },
+    }
 });
 
 const User = mongoose.model('User', userSchema);

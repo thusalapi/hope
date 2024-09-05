@@ -1,7 +1,6 @@
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const User = require('../models/User');
-const Student = require('../models/Student');
 const dotenv = require('dotenv');
 
 dotenv.config();
@@ -15,24 +14,15 @@ passport.use(new GoogleStrategy({
         let user = await User.findOne({ email: profile.emails[0].value });
 
         if (!user) {
-            // Create the user first
             user = await User.create({
-                userID: profile.id, // Ensure userID is set
+                userID: profile.id,
                 name: profile.displayName,
                 email: profile.emails[0].value,
-                role: 'Student', // Set default role as Student
-            });
-
-            // Now create the Student profile and embed the user data
-            await Student.create({
-                user: {
-                    userID: user.userID,
-                    name: user.name,
-                    email: user.email,
-                    role: user.role,
-                },
-                batch: 'Not Assigned', // Placeholder value
-                subGroup: 'Not Assigned', // Placeholder value
+                role: 'Student',
+                batch: 'Not Assigned',
+                subGroup: 'Not Assigned',
+                googleId: profile.id,
+                accessToken: accessToken
             });
         }
 

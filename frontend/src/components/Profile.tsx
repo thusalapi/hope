@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getProfile, updateProfile } from "../services/api";
-import { User, Student } from "../types";
+import { User } from "../types";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 
 const Profile: React.FC = () => {
-  const [user, setUser] = useState<User | Student | null>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
   const navigate = useNavigate();
@@ -42,6 +42,7 @@ const Profile: React.FC = () => {
     batch: string;
     subGroup: string;
   }) => {
+    console.log("Form Values:", values);
     try {
       const updatedUser = await updateProfile(values);
       setUser(updatedUser);
@@ -89,13 +90,23 @@ const Profile: React.FC = () => {
                       userID: user.userID,
                       name: user.name,
                       email: user.email,
-                      batch: (user as Student)?.batch || "",
-                      subGroup: (user as Student)?.subGroup || "",
+                      batch: user.batch || "",
+                      subGroup: user.subGroup || "",
                     }}
                     validationSchema={toFormikValidationSchema(
                       validationSchema
                     )}
-                    onSubmit={handleSave}
+                    onSubmit={async (values) => {
+                      // Console log the form values when the form is submitted
+                      console.log("Form Values Submitted:", values);
+
+                      try {
+                        // Call the handleSave function with the form values
+                        await handleSave(values);
+                      } catch (error) {
+                        console.error("Error updating profile:", error);
+                      }
+                    }}
                   >
                     <Form>
                       <div className="mt-6">
@@ -188,12 +199,8 @@ const Profile: React.FC = () => {
                   <div>
                     <p className="mt-6 text-xl">Name: {user.name}</p>
                     <p className="mt-2 text-xl">Email: {user.email}</p>
-                    <p className="mt-2 text-xl">
-                      Batch: {(user as Student).batch}
-                    </p>
-                    <p className="mt-2 text-xl">
-                      Sub Group: {(user as Student).subGroup}
-                    </p>
+                    <p className="mt-2 text-xl">Batch: {user.batch}</p>
+                    <p className="mt-2 text-xl">Sub Group: {user.subGroup}</p>
                     <div className="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
                       <button
                         onClick={handleEdit}

@@ -2,14 +2,16 @@ const mongoose = require('mongoose');
 const { z } = require('zod');
 
 const sessionSchemaZod = z.object({
-    title: z.string().required(),
+    title: z.string(),
     description: z.string().optional(),
-    instructorId: z.string().required(),
-    groupIds: z.array(z.string().required()),
-    labSheet: z.array(z.string().required()).nonempty(),
-    date: z.string().required(), 
-    startTime: z.string().required(), 
-    duration: z.number().positive(), 
+    instructorId: z.string(),
+    groupIds: z.array(z.string()),
+    labSheet: z.array(z.object({
+        question: z.string()
+    })),
+    date: z.string(),
+    startTime: z.string(),
+    duration: z.number().positive(),
 });
 
 const sessionSchema = new mongoose.Schema({
@@ -21,8 +23,7 @@ const sessionSchema = new mongoose.Schema({
         type: String
     },
     instructorId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        type: String,
         required: true
     },
     groupIds: [{
@@ -30,8 +31,10 @@ const sessionSchema = new mongoose.Schema({
         required: true
     }],
     labSheet: [{
-        type: String,
-        required: true
+        question: {
+            type: String,
+            required: true
+        }
     }],
     date: {
         type: String,

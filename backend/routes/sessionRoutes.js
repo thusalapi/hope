@@ -1,6 +1,7 @@
 const express = require('express');
-const router = express.Router();
 const { createSession, getSessions, getSessionById, updateSession, deleteSession } = require('../controllers/sessionController');
+
+const router = express.Router();
 
 router.get('/', getSessions);
 router.get('/:id', getSessionById);

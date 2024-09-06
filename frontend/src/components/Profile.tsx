@@ -27,11 +27,6 @@ const Profile: React.FC = () => {
     fetchProfile();
   }, []);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
-
   const handleEdit = () => {
     setEditing(true);
   };
@@ -100,11 +95,9 @@ const Profile: React.FC = () => {
                         validationSchema
                       )}
                       onSubmit={async (values) => {
-                        // Console log the form values when the form is submitted
                         console.log("Form Values Submitted:", values);
 
                         try {
-                          // Call the handleSave function with the form values
                           await handleSave(values);
                         } catch (error) {
                           console.error("Error updating profile:", error);

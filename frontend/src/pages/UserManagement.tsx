@@ -55,7 +55,7 @@ const UserManagement: React.FC = () => {
               }}
             >
               <DialogTrigger asChild>
-                <Button className="bg-blue-500 hover:bg-blue-600 text-white">
+                <Button className="bg-blue-custom hover:bg-blue-custom-600 text-white">
                   Add New User
                 </Button>
               </DialogTrigger>

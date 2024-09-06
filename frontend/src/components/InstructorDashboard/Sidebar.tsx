@@ -44,6 +44,11 @@ const Sidebar: React.FC = () => {
     navigate(path); // Navigate to the path when clicked
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   return (
     <div className="w-64 h-screen bg-white shadow-md">
       <div className="p-6 text-center">
@@ -60,6 +65,12 @@ const Sidebar: React.FC = () => {
             onClick={() => handleNavigation(index, item.path)} // Handle navigation
           />
         ))}
+        <button
+          onClick={handleLogout}
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
+        >
+          Logout
+        </button>
       </nav>
     </div>
   );

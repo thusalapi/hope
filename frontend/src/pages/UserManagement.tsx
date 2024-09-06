@@ -15,8 +15,8 @@ interface User {
   name: string;
   email: string;
   role: string;
-  batch: string;
-  subGroup: string;
+  batch?: string;
+  subGroup?: string;
 }
 
 const UserManagement: React.FC = () => {

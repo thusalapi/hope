@@ -28,7 +28,7 @@ const Profile: React.FC = () => {
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    navigate("/signin");
+    navigate("/login");
   };
 
   const handleEdit = () => {

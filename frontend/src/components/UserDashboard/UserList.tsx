@@ -40,7 +40,6 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-semibold mb-4">User List</h2>
       {users.length === 0 ? (
         <p>No users found.</p>
       ) : (
@@ -65,7 +64,7 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
                 <td className="border border-gray-300 p-2">{user.role}</td>
                 <td className="border border-gray-300 p-2">
                   <Button
-                    className="bg-blue-500 hover:bg-blue-600 text-white mr-2"
+                    className="bg-blue-custom hover:bg-blue-custom-600 text-white mr-2"
                     onClick={() => onEdit(user)}
                   >
                     Edit

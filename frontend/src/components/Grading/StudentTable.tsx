@@ -1,5 +1,5 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Student {
   id: string;
@@ -15,7 +15,6 @@ interface TableProps {
 
 const StudentTable: React.FC<TableProps> = ({ students }) => {
   const navigate = useNavigate();
-
 
   const handleCardClick = () => {
     navigate(`/reviewsubmission`);
@@ -40,12 +39,14 @@ const StudentTable: React.FC<TableProps> = ({ students }) => {
               <td className="py-3 px-4 text-gray-700">{student.id}</td>
               <td className="py-3 px-4 text-gray-700">{student.name}</td>
               <td className="py-3 px-4 text-gray-700">{student.email}</td>
-              <td className="py-3 px-4 text-gray-700">{student.uploadedTime}</td>
+              <td className="py-3 px-4 text-gray-700">
+                {student.uploadedTime}
+              </td>
               <td className="py-3 px-4 text-gray-700">{student.aiGrade}</td>
               <td className="py-3 px-4">
                 <button
                   onClick={handleCardClick}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg"
+                  className="px-4 py-2 bg-blue-custom-600 text-white rounded-lg"
                 >
                   Review Submission
                 </button>

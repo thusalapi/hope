@@ -125,6 +125,10 @@ const BigSessionTable: React.FC = () => {
     }
   };
 
+  const navigateToForm = () => {
+    navigate("/createSession");
+  };
+
   const handleDelete = async (id: string) => {
     const MySwal = withReactContent(Swal);
     MySwal.fire({
@@ -159,8 +163,8 @@ const BigSessionTable: React.FC = () => {
     <div className="container mx-auto flex flex-col">
       <div className="overflow-x-auto m-auto">
         <button
-          onClick={() => navigate("/createSession")}
-          className="btn btn-primary bg-blue hover:bg-white-content text-white text-bold px-6 py-2 rounded-md mt-4 mb-4 w-full"
+          onClick={navigateToForm}
+          className="btn btn-primary bg-blue-custom hover:bg-white-content text-white text-bold px-6 py-2 rounded-md mt-4 mb-4 w-full"
         >
           Create a new Lab Session
         </button>

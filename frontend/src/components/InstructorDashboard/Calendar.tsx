@@ -66,7 +66,7 @@ const Calendar: React.FC = () => {
         <div
           key={day}
           className={`flex items-center justify-center border h-12 ${
-            isSessionDay ? "bg-blue-500 text-white" : "bg-gray-100"
+            isSessionDay ? "bg-blue-custom text-white" : "bg-gray-100"
           }`}
         >
           {day}

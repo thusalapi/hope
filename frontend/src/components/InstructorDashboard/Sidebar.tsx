@@ -50,12 +50,12 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="w-64 h-screen bg-white shadow-md">
+    <div className="w-64 h-screen bg-white shadow-md flex flex-col">
       <div className="p-6 text-center">
         <h1 className="text-3xl font-bold text-blue-600">HOPE</h1>
       </div>
 
-      <nav className="flex flex-col p-4">
+      <nav className="flex flex-col p-4 flex-grow">
         {navItems.map((item, index) => (
           <NavItem
             key={index}
@@ -65,13 +65,14 @@ const Sidebar: React.FC = () => {
             onClick={() => handleNavigation(index, item.path)} // Handle navigation
           />
         ))}
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-4"
-        >
-          Logout
-        </button>
       </nav>
+
+      <button
+        onClick={handleLogout}
+        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-auto mb-20 mx-4"
+      >
+        Logout
+      </button>
     </div>
   );
 };

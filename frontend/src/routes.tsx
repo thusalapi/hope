@@ -6,6 +6,8 @@ import {
 import Login from "./components/Login";
 import Profile from "./components/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CreateSession from "./pages/CreateSession";
+import InstructorDashboard from "./pages/InstructorDashboard";
 
 const router = createBrowserRouter([
   {
@@ -23,6 +25,14 @@ const router = createBrowserRouter([
         <Profile />
       </ProtectedRoute>
     ),
+  },
+  {
+    path: "/createSession",
+    element: <CreateSession />,
+  },
+  {
+    path: "/dashboard",
+    element: <InstructorDashboard />,
   },
 ]);
 

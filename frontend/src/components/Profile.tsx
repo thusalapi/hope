@@ -36,10 +36,13 @@ const Profile: React.FC = () => {
   };
 
   const handleSave = async (values: {
+    userID: string;
     name: string;
     email: string;
-    groupNumber: string;
+    batch: string;
+    subGroup: string;
   }) => {
+    console.log("Form Values:", values);
     try {
       const updatedUser = await updateProfile(values);
       setUser(updatedUser);
@@ -66,7 +69,8 @@ const Profile: React.FC = () => {
   const validationSchema = z.object({
     name: z.string().nonempty("Required"),
     email: z.string().email("Invalid email address").nonempty("Required"),
-    groupNumber: z.string().nonempty("Required"),
+    batch: z.string().nonempty("Required"),
+    subGroup: z.string().nonempty("Required"),
   });
 
   return (
@@ -83,14 +87,26 @@ const Profile: React.FC = () => {
                 {editing ? (
                   <Formik
                     initialValues={{
+                      userID: user.userID,
                       name: user.name,
                       email: user.email,
-                      groupNumber: user.groupNumber || "",
+                      batch: user.batch || "",
+                      subGroup: user.subGroup || "",
                     }}
                     validationSchema={toFormikValidationSchema(
                       validationSchema
                     )}
-                    onSubmit={handleSave}
+                    onSubmit={async (values) => {
+                      // Console log the form values when the form is submitted
+                      console.log("Form Values Submitted:", values);
+
+                      try {
+                        // Call the handleSave function with the form values
+                        await handleSave(values);
+                      } catch (error) {
+                        console.error("Error updating profile:", error);
+                      }
+                    }}
                   >
                     <Form>
                       <div className="mt-6">
@@ -134,18 +150,37 @@ const Profile: React.FC = () => {
                       <div className="mt-2">
                         <label
                           className="block text-gray-700 text-sm font-bold mb-2"
-                          htmlFor="groupNumber"
+                          htmlFor="batch"
                         >
-                          Group Number
+                          Batch
                         </label>
                         <Field
                           type="text"
-                          id="groupNumber"
-                          name="groupNumber"
+                          id="batch"
+                          name="batch"
                           className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
                         />
                         <ErrorMessage
-                          name="groupNumber"
+                          name="batch"
+                          component="div"
+                          className="text-red-500 text-xs italic"
+                        />
+                      </div>
+                      <div className="mt-2">
+                        <label
+                          className="block text-gray-700 text-sm font-bold mb-2"
+                          htmlFor="subGroup"
+                        >
+                          Sub Group
+                        </label>
+                        <Field
+                          type="text"
+                          id="subGroup"
+                          name="subGroup"
+                          className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        />
+                        <ErrorMessage
+                          name="subGroup"
                           component="div"
                           className="text-red-500 text-xs italic"
                         />
@@ -164,9 +199,8 @@ const Profile: React.FC = () => {
                   <div>
                     <p className="mt-6 text-xl">Name: {user.name}</p>
                     <p className="mt-2 text-xl">Email: {user.email}</p>
-                    <p className="mt-2 text-xl">
-                      Group Number: {user.groupNumber}
-                    </p>
+                    <p className="mt-2 text-xl">Batch: {user.batch}</p>
+                    <p className="mt-2 text-xl">Sub Group: {user.subGroup}</p>
                     <div className="pt-6 text-base leading-6 font-bold sm:text-lg sm:leading-7">
                       <button
                         onClick={handleEdit}

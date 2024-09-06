@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createUser, updateUser } from "../../services/userApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 interface User {
   _id?: string;
@@ -29,6 +30,25 @@ const validationSchema = Yup.object().shape({
 });
 
 const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
+  const queryClient = useQueryClient();
+
+  const createMutation = useMutation({
+    mutationFn: createUser,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      onFormSubmit();
+    },
+  });
+
+  const updateMutation = useMutation({
+    mutationFn: ({ id, data }: { id: string; data: User }) =>
+      updateUser(id, data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      onFormSubmit();
+    },
+  });
+
   const initialValues: User = {
     name: user?.name || "",
     email: user?.email || "",
@@ -40,11 +60,10 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
   const handleSubmit = async (values: User, { setSubmitting }: any) => {
     try {
       if (user?._id) {
-        await updateUser(user._id, values);
+        await updateMutation.mutateAsync({ id: user._id, data: values });
       } else {
-        await createUser(values);
+        await createMutation.mutateAsync(values);
       }
-      onFormSubmit();
     } catch (error) {
       console.error("Error submitting form:", error);
     } finally {

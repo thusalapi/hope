@@ -40,7 +40,6 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
 
   return (
     <div className="p-4">
-      <h2 className="text-2xl font-semibold mb-4">User List</h2>
       {users.length === 0 ? (
         <p>No users found.</p>
       ) : (

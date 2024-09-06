@@ -33,7 +33,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <InstructorDashboard />,
+    element: (
+      <ProtectedRoute>
+        <InstructorDashboard />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/createSession",
@@ -52,16 +56,14 @@ const router = createBrowserRouter([
     element: <ViewGradesPage />,
   },
   {
-      path: "/viewstudents",
+    path: "/viewstudents",
     element: <ViewStudents />,
   },
-   {
-      path: "/reviewsubmission",
+  {
+    path: "/reviewsubmission",
     element: <ReviewSubmissionPage />,
   },
 ]);
-
-
 
 const AppRoutes = () => {
   return <RouterProvider router={router} />;

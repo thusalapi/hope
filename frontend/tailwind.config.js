@@ -28,6 +28,7 @@ export default {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
+				'blue-custom': '#191919',
 				'coral-red': '#FF6452',
 				'slate-gray': '#6D6D6D',
 				'pale-blue': '#F5F6FF',

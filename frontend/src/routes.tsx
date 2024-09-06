@@ -33,7 +33,11 @@ const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <InstructorDashboard />,
+    element: (
+      <ProtectedRoute>
+        <InstructorDashboard />
+      </ProtectedRoute>
+    ),
   },
   {
     path: "/createSession",

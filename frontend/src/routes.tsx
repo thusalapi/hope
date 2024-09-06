@@ -11,14 +11,15 @@ import InstructorDashboard from "./pages/InstructorDashboard";
 import ViewGradesPage from "./pages/ViewGradesPage";
 import ViewStudents from "./pages/ViewStudents";
 import ReviewSubmissionPage from "./pages/ReviewSubmissionPage";
+import UserManagement from "./pages/UserManagement";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/login" replace />,
+    element: <Navigate to="/signin" replace />,
   },
   {
-    path: "/login",
+    path: "/signin",
     element: <Login />,
   },
   {
@@ -30,12 +31,20 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/dashboard",
+    element: <InstructorDashboard />,
+  },
+  {
     path: "/createSession",
     element: <CreateSession />,
   },
   {
-    path: "/dashboard",
-    element: <InstructorDashboard />,
+    path: "/instructorSessions",
+    element: <InstructorSessionsPage />,
+  },
+  {
+    path: "/users",
+    element: <UserManagement />,
   },
   {
     path: "/viewgrades",

@@ -12,6 +12,7 @@ import ViewGradesPage from "./pages/ViewGradesPage";
 import ViewStudents from "./pages/ViewStudents";
 import ReviewSubmissionPage from "./pages/ReviewSubmissionPage";
 import UserManagement from "./pages/UserManagement";
+import InstructorSessionsPage from "./pages/InstructorSessionsPage";
 
 const router = createBrowserRouter([
   {

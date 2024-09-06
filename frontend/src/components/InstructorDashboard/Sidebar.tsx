@@ -69,7 +69,7 @@ const Sidebar: React.FC = () => {
 
       <button
         onClick={handleLogout}
-        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-auto mb-20 mx-4"
+        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline mt-auto mb-20 mx-4"
       >
         Logout
       </button>

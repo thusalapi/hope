@@ -8,6 +8,7 @@ import Profile from "./components/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CreateSession from "./pages/CreateSession";
 import InstructorDashboard from "./pages/InstructorDashboard";
+import InstructorSessionsPage from "./pages/InstructorSessionsPage";
 
 const router = createBrowserRouter([
   {
@@ -27,12 +28,16 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/dashboard",
+    element: <InstructorDashboard />,
+  },
+  {
     path: "/createSession",
     element: <CreateSession />,
   },
   {
-    path: "/dashboard",
-    element: <InstructorDashboard />,
+    path: "/instructorSessions",
+    element: <InstructorSessionsPage />,
   },
 ]);
 

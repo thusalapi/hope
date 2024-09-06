@@ -43,7 +43,7 @@ const SessionForm: React.FC = () => {
     const sessionData = {
       ...formData,
       groupIds: formData.groupIds.split(",").map((id) => id.trim()),
-      labSheet: formData.questions.map((q) => ({ question: q.question })), // Mapping questions properly
+      labSheet: formData.questions.map((q) => ({ question: q.question })),
     };
 
     try {
@@ -56,10 +56,7 @@ const SessionForm: React.FC = () => {
           },
         }
       );
-
       console.log("Session created successfully:", response.data);
-
-      // Optional: Reset form data after successful submission
       setFormData({
         title: "",
         description: "",
@@ -68,9 +65,8 @@ const SessionForm: React.FC = () => {
         date: "",
         startTime: "",
         duration: "",
-        questions: [{ question: "" }], // Reset questions array
+        questions: [{ question: "" }],
       });
-
       alert("Session created successfully!");
     } catch (error) {
       console.error("Error creating session:", error);
@@ -79,144 +75,144 @@ const SessionForm: React.FC = () => {
   };
 
   return (
-    <form
-      className="max-w-lg mx-auto p-4 bg-white shadow-md rounded"
-      onSubmit={handleSubmit}
-    >
-      <h2 className="text-2xl font-bold mb-4">Create a New Session</h2>
+    <div className="w-full max-w-xl mx-auto mt-10 p-8 bg-base-100 shadow-lg rounded-lg">
+      <form className="form-control space-y-4" onSubmit={handleSubmit}>
+        <h2 className="text-3xl font-bold text-center mb-6">
+          Create a New Session
+        </h2>
 
-      {/* Title */}
-      <label className="block mb-2">
-        Title:
+        {/* Title */}
+        <label className="label">
+          <span className="label-text">Title</span>
+        </label>
         <input
           type="text"
           name="title"
           value={formData.title}
           onChange={handleInputChange}
-          className="w-full p-2 border rounded mt-1"
+          className="input input-bordered w-full"
           required
         />
-      </label>
 
-      {/* Description */}
-      <label className="block mb-2">
-        Description:
+        {/* Description */}
+        <label className="label">
+          <span className="label-text">Description</span>
+        </label>
         <input
           type="text"
           name="description"
           value={formData.description}
           onChange={handleInputChange}
-          className="w-full p-2 border rounded mt-1"
+          className="input input-bordered w-full"
         />
-      </label>
 
-      {/* Instructor ID */}
-      <label className="block mb-2">
-        Instructor ID:
+        {/* Instructor ID */}
+        <label className="label">
+          <span className="label-text">Instructor ID</span>
+        </label>
         <input
           type="text"
           name="instructorId"
           value={formData.instructorId}
           onChange={handleInputChange}
-          className="w-full p-2 border rounded mt-1"
+          className="input input-bordered w-full"
           required
         />
-      </label>
 
-      {/* Group IDs */}
-      <label className="block mb-2">
-        Group IDs (comma-separated):
+        {/* Group IDs */}
+        <label className="label">
+          <span className="label-text">Group IDs (comma-separated)</span>
+        </label>
         <input
           type="text"
           name="groupIds"
           value={formData.groupIds}
           onChange={handleInputChange}
-          className="w-full p-2 border rounded mt-1"
+          className="input input-bordered w-full"
           placeholder="e.g., 01.01, 01.02"
           required
         />
-      </label>
 
-      {/* Date */}
-      <label className="block mb-2">
-        Date:
+        {/* Date */}
+        <label className="label">
+          <span className="label-text">Date</span>
+        </label>
         <input
           type="date"
           name="date"
           value={formData.date}
           onChange={handleInputChange}
-          className="w-full p-2 border rounded mt-1"
+          className="input input-bordered w-full"
           required
         />
-      </label>
 
-      {/* Start Time */}
-      <label className="block mb-2">
-        Start Time:
+        {/* Start Time */}
+        <label className="label">
+          <span className="label-text">Start Time</span>
+        </label>
         <input
           type="time"
           name="startTime"
           value={formData.startTime}
           onChange={handleInputChange}
-          className="w-full p-2 border rounded mt-1"
+          className="input input-bordered w-full"
           required
         />
-      </label>
 
-      {/* Duration */}
-      <label className="block mb-2">
-        Duration (in minutes):
+        {/* Duration */}
+        <label className="label">
+          <span className="label-text">Duration (in minutes)</span>
+        </label>
         <input
           type="number"
           name="duration"
           value={formData.duration}
           onChange={handleInputChange}
-          className="w-full p-2 border rounded mt-1"
+          className="input input-bordered w-full"
           required
         />
-      </label>
 
-      {/* Lab Sheet (Dynamic Questions) */}
-      <div className="mb-4">
-        <h3 className="font-bold">Lab Sheet Questions:</h3>
-        {formData.questions.map((q, index) => (
-          <div key={index} className="mb-2 flex items-center">
-            <input
-              type="text"
-              value={q.question}
-              onChange={(e) => handleQuestionChange(index, e.target.value)}
-              className="w-full p-2 border rounded mt-1"
-              placeholder={`Question ${index + 1}`}
-              required
-            />
-            {index > 0 && (
-              <button
-                type="button"
-                onClick={() => removeQuestionField(index)}
-                className="ml-2 text-red-600"
-              >
-                Remove
-              </button>
-            )}
-          </div>
-        ))}
-        <button
-          type="button"
-          onClick={addQuestionField}
-          className="mt-2 text-blue-600"
-        >
-          Add Question
+        {/* Lab Sheet (Dynamic Questions) */}
+        <div className="space-y-2">
+          <label className="label">
+            <span className="label-text">Lab Sheet Questions</span>
+          </label>
+          {formData.questions.map((q, index) => (
+            <div key={index} className="flex items-center space-x-2">
+              <input
+                type="text"
+                value={q.question}
+                onChange={(e) => handleQuestionChange(index, e.target.value)}
+                className="input input-bordered w-full"
+                placeholder={`Question ${index + 1}`}
+                required
+              />
+              {index > 0 && (
+                <button
+                  type="button"
+                  onClick={() => removeQuestionField(index)}
+                  className="btn btn-error btn-xs"
+                >
+                  Remove
+                </button>
+              )}
+            </div>
+          ))}
+          <button
+            type="button"
+            onClick={addQuestionField}
+            className="btn btn-outline btn-secondary mt-2"
+          >
+            Add Question
+          </button>
+        </div>
+
+        {/* Submit Button */}
+        <button type="submit" className="btn btn-primary w-full mt-6">
+          Create Session
         </button>
-      </div>
-
-      {/* Submit Button */}
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600"
-      >
-        Create Session
-      </button>
-    </form>
+      </form>
+    </div>
   );
 };
 

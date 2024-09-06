@@ -7,6 +7,7 @@ import Login from "./components/Login";
 import Profile from "./components/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SessionForm from "./components/SessionForm";
+import InstructorDashboard from "./pages/InstructorDashboard";
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
   {
     path: "/sessionForm",
     element: <SessionForm />,
+  },
+  {
+    path: "/dashboard",
+    element: <InstructorDashboard />,
   },
 ]);
 

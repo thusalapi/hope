@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { IoMdHome, IoIosPeople, IoMdAnalytics } from "react-icons/io";
+import {
+  IoMdHome,
+  IoIosPeople,
+  IoMdAnalytics,
+  IoIosPerson,
+} from "react-icons/io";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -24,12 +30,19 @@ const NavItem: React.FC<NavItemProps> = ({ icon, text, isActive, onClick }) => {
 
 const Sidebar: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
+  const navigate = useNavigate(); // Initialize the useNavigate hook
 
   const navItems = [
-    { icon: <IoMdHome />, text: "Dashboard" },
-    { icon: <IoIosPeople />, text: "Sessions" },
-    { icon: <IoMdAnalytics />, text: "Reports" },
+    { icon: <IoMdHome />, text: "Dashboard", path: "/dashboard" },
+    { icon: <IoIosPeople />, text: "Sessions", path: "/instructorSessions" },
+    { icon: <IoMdAnalytics />, text: "Reports", path: "/reports" },
+    { icon: <IoIosPerson />, text: "Profile", path: "/profile" },
   ];
+
+  const handleNavigation = (index: number, path: string) => {
+    setActiveIndex(index);
+    navigate(path); // Navigate to the path when clicked
+  };
 
   return (
     <div className="w-64 h-screen bg-white shadow-md">
@@ -44,7 +57,7 @@ const Sidebar: React.FC = () => {
             icon={item.icon}
             text={item.text}
             isActive={activeIndex === index}
-            onClick={() => setActiveIndex(index)}
+            onClick={() => handleNavigation(index, item.path)} // Handle navigation
           />
         ))}
       </nav>

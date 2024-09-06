@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
-// Define the session type
 interface Session {
   _id: string;
   title: string;
@@ -22,11 +21,14 @@ const BigSessionTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [editingSessionId, setEditingSessionId] = useState<string | null>(null); // State for tracking which session is being edited
+  const [editingSessionData, setEditingSessionData] = useState<Session | null>(
+    null
+  ); // State for editing form data
   const navigate = useNavigate();
 
-  // Pagination state
-  const [currentPage, setCurrentPage] = useState<number>(1);
   const rowsPerPage = 5;
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
     const fetchSessions = async () => {
@@ -45,7 +47,6 @@ const BigSessionTable: React.FC = () => {
     fetchSessions();
   }, []);
 
-  // Function to sort sessions by date and time
   const sortSessions = (sessions: Session[]): Session[] => {
     return sessions.sort((a, b) => {
       const dateTimeA = new Date(`${a.date}T${a.startTime}`);
@@ -54,55 +55,78 @@ const BigSessionTable: React.FC = () => {
     });
   };
 
-  // Function to filter sessions by the selected date
   const filterByDate = (date: Date | null) => {
     if (date) {
-      const formattedDate = date.toISOString().split("T")[0]; // Format date as YYYY-MM-DD
+      const formattedDate = date.toISOString().split("T")[0];
       const filtered = sessions.filter(
         (session) => session.date === formattedDate
       );
       setFilteredSessions(filtered);
-      setCurrentPage(1); // Reset to first page when filter is applied
+      setCurrentPage(1);
     } else {
       setFilteredSessions(sessions);
     }
   };
 
-  // Handler function to reset the table to show all data
   const showAllData = () => {
     setFilteredSessions(sessions);
     setSelectedDate(null);
-    setCurrentPage(1); // Reset to first page when showing all data
+    setCurrentPage(1);
   };
 
-  // Pagination calculation
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
   const currentRows = filteredSessions.slice(indexOfFirstRow, indexOfLastRow);
   const totalPages = Math.ceil(filteredSessions.length / rowsPerPage);
 
-  // Handler functions for pagination
   const nextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
+    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
 
   const prevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+    if (currentPage > 1) setCurrentPage(currentPage - 1);
+  };
+
+  const handleEdit = (session: Session) => {
+    setEditingSessionId(session._id);
+    setEditingSessionData(session);
+  };
+
+  const handleJoin = (id: string) => {
+    console.log(`Join session with id: ${id}`);
+    // Implement join logic here
+  };
+
+  const handleCancelEdit = () => {
+    setEditingSessionId(null);
+    setEditingSessionData(null);
+  };
+
+  const handleUpdateSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      if (editingSessionData) {
+        await axios.put(
+          `http://localhost:5000/session/${editingSessionData._id}`,
+          editingSessionData
+        );
+        const updatedSessions = sessions.map((session) =>
+          session._id === editingSessionData._id ? editingSessionData : session
+        );
+        setSessions(updatedSessions);
+        setFilteredSessions(updatedSessions);
+        setEditingSessionId(null);
+        setEditingSessionData(null);
+        Swal.fire("Updated!", "The session has been updated.", "success");
+      }
+    } catch (err) {
+      console.error("Failed to update session:", err);
+      Swal.fire("Error!", "Failed to update the session.", "error");
     }
   };
 
-  const handleEdit = (id: string) => {
-    console.log(`Edit session with id: ${id}`);
-    // Implement edit logic here
-  };
-
-  // Updated handleDelete function with SweetAlert2 confirmation
   const handleDelete = async (id: string) => {
     const MySwal = withReactContent(Swal);
-
     MySwal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -114,15 +138,11 @@ const BigSessionTable: React.FC = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          // Send delete request to the backend
           await axios.delete(`http://localhost:5000/session/${id}`);
-
-          // Update the state to remove the deleted session
           setSessions(sessions.filter((session) => session._id !== id));
           setFilteredSessions(
             filteredSessions.filter((session) => session._id !== id)
           );
-
           MySwal.fire("Deleted!", "The session has been deleted.", "success");
         } catch (err) {
           console.error("Failed to delete session:", err);
@@ -132,15 +152,6 @@ const BigSessionTable: React.FC = () => {
     });
   };
 
-  const handleJoin = (id: string) => {
-    console.log(`Join session with id: ${id}`);
-    // Implement join logic here
-  };
-
-  const navigateToForm = () => {
-    navigate("/createSession");
-  };
-
   if (loading) return <p>Loading sessions...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
 
@@ -148,7 +159,7 @@ const BigSessionTable: React.FC = () => {
     <div className="container mx-auto flex flex-col">
       <div className="overflow-x-auto m-auto">
         <button
-          onClick={navigateToForm}
+          onClick={() => navigate("/createSession")}
           className="btn btn-primary bg-blue hover:bg-white-content text-white text-bold px-6 py-2 rounded-md mt-4 mb-4 w-full"
         >
           Create a new Lab Session
@@ -176,56 +187,144 @@ const BigSessionTable: React.FC = () => {
               <th>Date</th>
               <th>Start Time</th>
               <th>Duration</th>
-              <th className="w-1/3">Description</th>
+              <th>Description</th>
               <th>Actions</th>
             </tr>
           </thead>
-          <tbody className="min-h-[200px]">
+          <tbody>
             {currentRows.length > 0 ? (
               currentRows.map((session) => (
-                <tr key={session._id}>
-                  <td>{session.title}</td>
-                  <td>{session.date}</td>
-                  <td>{session.startTime}</td>
-                  <td>{session.duration}</td>
-                  <td className="max-w-xs break-words">
-                    {session.description}
-                  </td>
-                  <td>
-                    <div className="flex space-x-2">
-                      <button
-                        onClick={() => handleEdit(session._id)}
-                        className="btn btn-outline btn-primary"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDelete(session._id)}
-                        className="btn btn-outline btn-error"
-                      >
-                        Delete
-                      </button>
-                      <button
-                        onClick={() => handleJoin(session._id)}
-                        className="btn btn-outline btn-secondary"
-                      >
-                        Join
-                      </button>
-                    </div>
-                  </td>
-                </tr>
+                <React.Fragment key={session._id}>
+                  <tr>
+                    <td>{session.title}</td>
+                    <td>{session.date}</td>
+                    <td>{session.startTime}</td>
+                    <td>{session.duration}</td>
+                    <td className="max-w-xs break-words">
+                      {session.description}
+                    </td>
+                    <td>
+                      <div className="flex space-x-2">
+                        <button
+                          onClick={() => handleEdit(session)}
+                          className="btn btn-outline btn-primary"
+                        >
+                          Edit
+                        </button>
+                        <button
+                          onClick={() => handleDelete(session._id)}
+                          className="btn btn-outline btn-error"
+                        >
+                          Delete
+                        </button>
+                        <button
+                          onClick={() => handleJoin(session._id)}
+                          className="btn btn-outline btn-secondary"
+                        >
+                          Join
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                  {editingSessionId === session._id && (
+                    <tr>
+                      <td colSpan={6}>
+                        <form
+                          onSubmit={handleUpdateSubmit}
+                          className="p-4 border rounded-lg bg-gray-50"
+                        >
+                          <div className="grid grid-cols-2 gap-4">
+                            <input
+                              type="text"
+                              value={editingSessionData?.title || ""}
+                              onChange={(e) =>
+                                setEditingSessionData({
+                                  ...editingSessionData!,
+                                  title: e.target.value,
+                                })
+                              }
+                              className="input input-bordered w-full"
+                              placeholder="Title"
+                            />
+                            <DatePicker
+                              selected={
+                                editingSessionData
+                                  ? new Date(editingSessionData.date)
+                                  : null
+                              }
+                              onChange={(date: Date | null) =>
+                                setEditingSessionData({
+                                  ...editingSessionData!,
+                                  date: date
+                                    ? date.toISOString().split("T")[0]
+                                    : "",
+                                })
+                              }
+                              dateFormat="yyyy/MM/dd"
+                              className="input input-bordered w-full"
+                              placeholderText="Date"
+                            />
+                            <input
+                              type="time"
+                              value={editingSessionData?.startTime || ""}
+                              onChange={(e) =>
+                                setEditingSessionData({
+                                  ...editingSessionData!,
+                                  startTime: e.target.value,
+                                })
+                              }
+                              className="input input-bordered w-full"
+                              placeholder="Start Time"
+                            />
+                            <input
+                              type="text"
+                              value={editingSessionData?.duration || ""}
+                              onChange={(e) =>
+                                setEditingSessionData({
+                                  ...editingSessionData!,
+                                  duration: e.target.value,
+                                })
+                              }
+                              className="input input-bordered w-full"
+                              placeholder="Duration"
+                            />
+                            <textarea
+                              value={editingSessionData?.description || ""}
+                              onChange={(e) =>
+                                setEditingSessionData({
+                                  ...editingSessionData!,
+                                  description: e.target.value,
+                                })
+                              }
+                              className="textarea textarea-bordered w-full"
+                              placeholder="Description"
+                            />
+                          </div>
+                          <div className="mt-4 flex space-x-2">
+                            <button type="submit" className="btn btn-primary">
+                              Save Changes
+                            </button>
+                            <button
+                              type="button"
+                              onClick={handleCancelEdit}
+                              className="btn btn-outline"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </form>
+                      </td>
+                    </tr>
+                  )}
+                </React.Fragment>
               ))
             ) : (
               <tr>
-                <td colSpan={6} className="text-center py-4">
-                  No records were found.
-                </td>
+                <td colSpan={6}>No sessions found.</td>
               </tr>
             )}
           </tbody>
         </table>
-
-        {/* Pagination */}
         <div className="flex justify-center mt-4 space-x-2">
           <button
             onClick={prevPage}

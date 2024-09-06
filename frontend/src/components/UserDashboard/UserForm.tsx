@@ -134,7 +134,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
           <Button
             type="submit"
             disabled={isSubmitting}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
+            className="bg-blue-custom hover:bg-blue-custom-600 text-white"
           >
             {user ? "Update User" : "Create User"}
           </Button>

@@ -9,6 +9,8 @@ const userRoutes = require('./routes/userRoutes');
 
 
 const dotenv = require('dotenv');
+const grade = require('./routes/grade');
+
 
 dotenv.config();
 
@@ -29,6 +31,7 @@ app.use('/profile', profileRoutes);
 app.use('/session', sessionRoutes);
 app.use('/users', userRoutes);
 
+app.use('/grade', grade);
 
 app.get('/', (req, res) => {
     res.send('Home Page');

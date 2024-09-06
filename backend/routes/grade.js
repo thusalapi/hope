@@ -1,12 +1,7 @@
 const express = require('express');
 const { authenticateToken } = require('../middleware/gradeAuth');
 const { validateEvaluation } = require('../middleware/gradeValidate');
-const {
-    getEvaluation,
-    createEvaluation,
-    updateEvaluation,
-    deleteEvaluation
-} = require('../controllers/gradeController');
+const {getEvaluation, createEvaluation, updateEvaluation, deleteEvaluation} = require('../controllers/gradeController');
 
 const router = express.Router();
 

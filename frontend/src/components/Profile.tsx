@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { getProfile, updateProfile } from "../services/api";
+import { getProfile, updateProfile } from "../services/auth";
 import { User } from "../types";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { z } from "zod";

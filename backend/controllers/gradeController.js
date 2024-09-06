@@ -1,9 +1,9 @@
-const ActivityEvaluation = require('../models/Grade');
+const grade = require('../models/Grade');
 
 // Get an evaluation by ID
 const getEvaluation = async (req, res) => {
     try {
-        const evaluation = await ActivityEvaluation.findById(req.params.id);
+        const evaluation = await grade.findById(req.params.id);
         if (!evaluation) {
             return res.status(404).json({ message: 'Evaluation not found' });
         }
@@ -17,7 +17,7 @@ const getEvaluation = async (req, res) => {
 const createEvaluation = async (req, res) => {
     try {
         const { sessionId, activityId, studentId, codeSubmission, aiEvaluation } = req.body;
-        const newEvaluation = new ActivityEvaluation({
+        const newEvaluation = new grade({
             sessionId,
             activityId,
             studentId,
@@ -35,7 +35,7 @@ const createEvaluation = async (req, res) => {
 const updateEvaluation = async (req, res) => {
     try {
         const { instructorEvaluation } = req.body;
-        const updatedEvaluation = await ActivityEvaluation.findByIdAndUpdate(
+        const updatedEvaluation = await grade.findByIdAndUpdate(
             req.params.id,
             { instructorEvaluation, instructorEvaluatedAt: new Date() },
             { new: true }
@@ -52,7 +52,7 @@ const updateEvaluation = async (req, res) => {
 // Delete an evaluation
 const deleteEvaluation = async (req, res) => {
     try {
-        const deletedEvaluation = await ActivityEvaluation.findByIdAndDelete(req.params.id);
+        const deletedEvaluation = await grade.findByIdAndDelete(req.params.id);
         if (!deletedEvaluation) {
             return res.status(404).json({ message: 'Evaluation not found' });
         }

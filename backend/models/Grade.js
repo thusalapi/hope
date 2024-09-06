@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const { z } = require('zod');
 
 // Define the Zod schema for validation
-const activityEvaluationSchemaZod = z.object({
+const gradeSchemaZod = z.object({
     sessionId: z.string().nonempty(),
     activityId: z.string().nonempty(),
     studentId: z.string().nonempty(),
@@ -19,7 +19,7 @@ const activityEvaluationSchemaZod = z.object({
 });
 
 // Define the Mongoose schema
-const activityEvaluationSchema = new mongoose.Schema({
+const gradeSchema = new mongoose.Schema({
     sessionId: {
         type: String,
         required: true
@@ -61,16 +61,17 @@ const activityEvaluationSchema = new mongoose.Schema({
     }
 });
 
+const grade = mongoose.model('Grade', gradeSchema);
+
 // Pre-save validation using Zod
-activityEvaluationSchema.pre('save', function (next) {
-    const activityEvaluation = this;
-    const validation = activityEvaluationSchemaZod.safeParse(activityEvaluation.toObject());
+gradeSchema.pre('save', function (next) {
+    const grade = this;
+    const validation = gradeSchemaZod.safeParse(grade.toObject());
     if (!validation.success) {
         return next(new Error('Validation failed: ' + validation.error.errors.map(e => e.message).join(', ')));
     }
     next();
 });
 
-const ActivityEvaluation = mongoose.model('ActivityEvaluation', activityEvaluationSchema);
 
-module.exports = ActivityEvaluation;
+module.exports = grade;

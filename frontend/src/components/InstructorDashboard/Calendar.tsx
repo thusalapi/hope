@@ -5,7 +5,7 @@ import { format, isSameDay } from "date-fns";
 interface Session {
   _id: string;
   title: string;
-  date: string; // ISO date string
+  date: Date; // Changed to Date type
 }
 
 const Calendar: React.FC = () => {
@@ -16,7 +16,12 @@ const Calendar: React.FC = () => {
     const fetchSessions = async () => {
       try {
         const response = await axios.get("http://localhost:5000/session");
-        setSessions(response.data);
+        // Assuming the API returns dates as ISO strings, convert them to Date objects
+        const fetchedSessions = response.data.map((session: any) => ({
+          ...session,
+          date: new Date(session.date), // Convert date string to Date object
+        }));
+        setSessions(fetchedSessions);
       } catch (error) {
         console.error("Error fetching sessions:", error);
       }
@@ -30,7 +35,7 @@ const Calendar: React.FC = () => {
   };
 
   const getSessionDates = () => {
-    return sessions.map((session) => new Date(session.date));
+    return sessions.map((session) => session.date);
   };
 
   const renderCalendar = () => {
@@ -74,7 +79,8 @@ const Calendar: React.FC = () => {
 
   const changeMonth = (offset: number) => {
     const newDate = new Date(
-      currentDate.setMonth(currentDate.getMonth() + offset)
+      currentDate.getFullYear(),
+      currentDate.getMonth() + offset
     );
     setCurrentDate(newDate);
   };

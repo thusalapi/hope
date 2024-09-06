@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { getProfile, updateProfile } from "../services/auth";
 import { User } from "../types";
 import { Formik, Form, Field, ErrorMessage } from "formik";
@@ -11,7 +10,6 @@ const Profile: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProfile = async () => {

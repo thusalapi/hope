@@ -94,7 +94,7 @@ const SessionForm: React.FC = () => {
       displaySuccessToast("Session created successfully!");
       resetForm();
       setTimeout(() => {
-        navigate("/dashboard");
+        navigate("/instructorSessions");
       }, 3000);
     } catch (error) {
       console.error("Error creating session:", error);

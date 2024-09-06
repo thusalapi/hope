@@ -10,6 +10,7 @@ import CreateSession from "./pages/CreateSession";
 import InstructorDashboard from "./pages/InstructorDashboard";
 import UserManagement from "./pages/UserManagement";
 
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -28,12 +29,16 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/dashboard",
+    element: <InstructorDashboard />,
+  },
+  {
     path: "/createSession",
     element: <CreateSession />,
   },
   {
-    path: "/dashboard",
-    element: <InstructorDashboard />,
+    path: "/instructorSessions",
+    element: <InstructorSessionsPage />,
   },
   {
     path: "/users",

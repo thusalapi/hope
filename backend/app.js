@@ -5,6 +5,8 @@ const session = require('express-session');
 const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const dotenv = require('dotenv');
+const grade = require('./routes/grade');
+
 
 dotenv.config();
 
@@ -20,6 +22,7 @@ app.use(passport.session());
 // Routes
 app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
+app.use('/grade', grade);
 
 app.get('/', (req, res) => {
     res.send('Home Page');

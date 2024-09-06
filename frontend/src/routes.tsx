@@ -8,15 +8,16 @@ import Profile from "./components/Profile";
 import ProtectedRoute from "./components/ProtectedRoute";
 import CreateSession from "./pages/CreateSession";
 import InstructorDashboard from "./pages/InstructorDashboard";
-import InstructorSessionsPage from "./pages/InstructorSessionsPage";
+import UserManagement from "./pages/UserManagement";
+
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/login" replace />,
+    element: <Navigate to="/signin" replace />,
   },
   {
-    path: "/login",
+    path: "/signin",
     element: <Login />,
   },
   {
@@ -38,6 +39,10 @@ const router = createBrowserRouter([
   {
     path: "/instructorSessions",
     element: <InstructorSessionsPage />,
+  },
+  {
+    path: "/users",
+    element: <UserManagement />,
   },
 ]);
 

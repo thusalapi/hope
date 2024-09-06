@@ -14,13 +14,16 @@ passport.use(new GoogleStrategy({
         let user = await User.findOne({ email: profile.emails[0].value });
 
         if (!user) {
+            const email = profile.emails[0].value;
+            const role = email.endsWith('@sliit.lk') ? 'Instructor' : 'Student';
+
             user = await User.create({
-                userID: profile.id,
+                userID: profile.id, // Set userID to the Google profile ID
                 name: profile.displayName,
-                email: profile.emails[0].value,
-                role: 'Student',
-                batch: 'Not Assigned',
-                subGroup: 'Not Assigned',
+                email: email,
+                role: role,
+                batch: role === 'Student' ? 'Not Assigned' : null,
+                subGroup: role === 'Student' ? 'Not Assigned' : null,
                 googleId: profile.id,
                 accessToken: accessToken
             });

@@ -1,15 +1,8 @@
-import React, { useState, useEffect } from "react";
-import {
-  Dialog,
-  DialogTrigger,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createUser, updateUser } from "../../services/userApi";
 
@@ -18,95 +11,117 @@ interface User {
   name: string;
   email: string;
   role: string;
+  batch?: string;
+  subGroup?: string;
 }
 
-const UserForm: React.FC<{ user?: User; onFormSubmit: () => void }> = ({
-  user,
-  onFormSubmit,
-}) => {
-  const [formData, setFormData] = useState<User>({
-    name: "",
-    email: "",
-    role: "Student",
-  });
+interface UserFormProps {
+  user?: User;
+  onFormSubmit: () => void;
+}
 
-  useEffect(() => {
-    if (user) {
-      setFormData(user);
-    }
-  }, [user]);
+const validationSchema = Yup.object().shape({
+  name: Yup.string().required("Name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  role: Yup.string().required("Role is required"),
+  batch: Yup.string(),
+  subGroup: Yup.string(),
+});
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
+  const initialValues: User = {
+    name: user?.name || "",
+    email: user?.email || "",
+    role: user?.role || "Student",
+    batch: user?.batch || "",
+    subGroup: user?.subGroup || "",
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (user?._id) {
-      await updateUser(user._id, formData);
-    } else {
-      await createUser(formData);
+  const handleSubmit = async (values: User, { setSubmitting }: any) => {
+    try {
+      if (user?._id) {
+        await updateUser(user._id, values);
+      } else {
+        await createUser(values);
+      }
+      onFormSubmit();
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    } finally {
+      setSubmitting(false);
     }
-    onFormSubmit();
   };
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
-        {/* Ensure the button is correctly wrapped by DialogTrigger */}
-        <Button variant="secondary">{user ? "Edit User" : "Add User"}</Button>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>{user ? "Edit User" : "Add New User"}</DialogTitle>
-        </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4">
+    <Formik
+      initialValues={initialValues}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
+    >
+      {({ isSubmitting }) => (
+        <Form className="space-y-4">
           <div className="space-y-2">
             <Label htmlFor="name">Name:</Label>
-            <Input
-              type="text"
+            <Field name="name" as={Input} />
+            <ErrorMessage
               name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
+              component="div"
+              className="text-red-500"
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="email">Email:</Label>
-            <Input
-              type="email"
+            <Field name="email" type="email" as={Input} />
+            <ErrorMessage
               name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
+              component="div"
+              className="text-red-500"
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="role">Role:</Label>
-            <select
+            <Field
               name="role"
-              value={formData.role}
-              onChange={handleChange}
-              required
+              as="select"
               className="border border-gray-300 rounded p-2 w-full"
             >
               <option value="Student">Student</option>
               <option value="Instructor">Instructor</option>
-            </select>
+            </Field>
+            <ErrorMessage
+              name="role"
+              component="div"
+              className="text-red-500"
+            />
           </div>
-          <DialogFooter>
-            <DialogClose asChild>
-              <Button variant="secondary">Cancel</Button>
-            </DialogClose>
-            <Button type="submit" variant="secondary">
-              Submit
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+          <div className="space-y-2">
+            <Label htmlFor="batch">Batch:</Label>
+            <Field name="batch" as={Input} />
+            <ErrorMessage
+              name="batch"
+              component="div"
+              className="text-red-500"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="subGroup">Sub Group:</Label>
+            <Field name="subGroup" as={Input} />
+            <ErrorMessage
+              name="subGroup"
+              component="div"
+              className="text-red-500"
+            />
+          </div>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className="bg-blue-500 hover:bg-blue-600 text-white"
+          >
+            {user ? "Update User" : "Create User"}
+          </Button>
+        </Form>
+      )}
+    </Formik>
   );
 };
 

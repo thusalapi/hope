@@ -8,9 +8,11 @@ import NextSession from "../components/InstructorDashboard/NextSession";
 const InstructorDashboard: React.FC = () => {
   return (
     <div className="flex">
-      <Sidebar />
+      <div className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white">
+        <Sidebar />
+      </div>
 
-      <div className="container mx-auto flex">
+      <div className="container mx-auto flex ml-64">
         <div className="w-2/3">
           <NextSession />
           <SmallSessionTable />

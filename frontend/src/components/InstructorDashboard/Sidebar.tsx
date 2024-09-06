@@ -44,7 +44,7 @@ const Sidebar: React.FC = () => {
             icon={item.icon}
             text={item.text}
             isActive={activeIndex === index}
-            onClick={() => setActiveIndex(index)} // Set active index when clicked
+            onClick={() => setActiveIndex(index)}
           />
         ))}
       </nav>

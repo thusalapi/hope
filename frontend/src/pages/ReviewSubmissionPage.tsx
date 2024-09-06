@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from "../components/InstructorDashboard/Sidebar";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../components/Sidebar";
 import InstructorProfile from "../components/InstructorDashboard/InstructorProfile";
 import Calendar from "../components/InstructorDashboard/Calendar";
-import GradeSelector from '../components/Grading/GradeSelector';
+import GradeSelector from "../components/Grading/GradeSelector";
 
 const ReviewSubmissionPage: React.FC = () => {
   const navigate = useNavigate();
@@ -23,7 +23,7 @@ console.log('Result:', result);
 
   const handleSubmit = () => {
     // Logic to handle grade submission can be added here
-    navigate('/viewstudents'); // Redirect to the student list page
+    navigate("/viewstudents"); // Redirect to the student list page
   };
 
   return (
@@ -32,24 +32,29 @@ console.log('Result:', result);
         <Sidebar />
       </div>
 
-    <div className="container mx-auto flex ml-64">
-      <div className="w-2/3">
-        <div className="w-full max-w-4xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
-          <h2 className="text-2xl font-bold mb-4">Review Student Submission</h2>
-          <GradeSelector selectedGrade={selectedGrade} onSelectGrade={handleGradeSelect} />
-          <textarea
-            readOnly
-            value={studentCode}
-            className="w-full h-80 border border-gray-300 rounded-lg p-4 text-sm bg-gray-100"
-          />
-          <button
-            onClick={handleSubmit}
-            className="mt-4 px-4 py-2 bg-blue-600 rounded-lg text-white"
-          >
-            Submit
-          </button>
+      <div className="container mx-auto flex ml-64">
+        <div className="w-2/3">
+          <div className="w-full max-w-4xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
+            <h2 className="text-2xl font-bold mb-4">
+              Review Student Submission
+            </h2>
+            <GradeSelector
+              selectedGrade={selectedGrade}
+              onSelectGrade={handleGradeSelect}
+            />
+            <textarea
+              readOnly
+              value={studentCode}
+              className="w-full h-80 border border-gray-300 rounded-lg p-4 text-sm bg-gray-100"
+            />
+            <button
+              onClick={handleSubmit}
+              className="mt-4 px-4 py-2 bg-blue-600 rounded-lg text-white"
+            >
+              Submit
+            </button>
+          </div>
         </div>
-      </div>
 
         <div className="w-1/3">
           <InstructorProfile />

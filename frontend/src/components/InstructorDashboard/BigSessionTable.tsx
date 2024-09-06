@@ -3,10 +3,12 @@ import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 // Define the session type
 interface Session {
-  id: string;
+  _id: string;
   title: string;
   date: string;
   startTime: string;
@@ -97,17 +99,37 @@ const BigSessionTable: React.FC = () => {
     // Implement edit logic here
   };
 
+  // Updated handleDelete function with SweetAlert2 confirmation
   const handleDelete = async (id: string) => {
-    try {
-      await axios.delete(`http://localhost:5000/session/${id}`);
-      setSessions(sessions.filter((session) => session.id !== id));
-      setFilteredSessions(
-        filteredSessions.filter((session) => session.id !== id)
-      );
-      console.log(`Deleted session with id: ${id}`);
-    } catch (err) {
-      console.error("Failed to delete session:", err);
-    }
+    const MySwal = withReactContent(Swal);
+
+    MySwal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          // Send delete request to the backend
+          await axios.delete(`http://localhost:5000/session/${id}`);
+
+          // Update the state to remove the deleted session
+          setSessions(sessions.filter((session) => session._id !== id));
+          setFilteredSessions(
+            filteredSessions.filter((session) => session._id !== id)
+          );
+
+          MySwal.fire("Deleted!", "The session has been deleted.", "success");
+        } catch (err) {
+          console.error("Failed to delete session:", err);
+          MySwal.fire("Error!", "Failed to delete the session.", "error");
+        }
+      }
+    });
   };
 
   const handleJoin = (id: string) => {
@@ -161,7 +183,7 @@ const BigSessionTable: React.FC = () => {
           <tbody className="min-h-[200px]">
             {currentRows.length > 0 ? (
               currentRows.map((session) => (
-                <tr key={session.id}>
+                <tr key={session._id}>
                   <td>{session.title}</td>
                   <td>{session.date}</td>
                   <td>{session.startTime}</td>
@@ -172,19 +194,19 @@ const BigSessionTable: React.FC = () => {
                   <td>
                     <div className="flex space-x-2">
                       <button
-                        onClick={() => handleEdit(session.id)}
+                        onClick={() => handleEdit(session._id)}
                         className="btn btn-outline btn-primary"
                       >
                         Edit
                       </button>
                       <button
-                        onClick={() => handleDelete(session.id)}
+                        onClick={() => handleDelete(session._id)}
                         className="btn btn-outline btn-error"
                       >
                         Delete
                       </button>
                       <button
-                        onClick={() => handleJoin(session.id)}
+                        onClick={() => handleJoin(session._id)}
                         className="btn btn-outline btn-secondary"
                       >
                         Join

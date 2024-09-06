@@ -16,10 +16,10 @@ import UserManagement from "./pages/UserManagement";
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Navigate to="/signin" replace />,
+    element: <Navigate to="/login" replace />,
   },
   {
-    path: "/signin",
+    path: "/login",
     element: <Login />,
   },
   {

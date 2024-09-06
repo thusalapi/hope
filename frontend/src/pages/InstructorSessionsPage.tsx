@@ -1,5 +1,5 @@
 import React from "react";
-import Sidebar from "../components/InstructorDashboard/Sidebar";
+import Sidebar from "../components/Sidebar";
 import BigSessionTable from "../components/InstructorDashboard/BigSessionTable";
 
 const InstructorSessionsPage: React.FC = () => {

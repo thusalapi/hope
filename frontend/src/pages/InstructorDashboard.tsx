@@ -1,5 +1,5 @@
 import React from "react";
-import Sidebar from "../components/InstructorDashboard/Sidebar";
+import Sidebar from "../components/Sidebar";
 import SmallSessionTable from "../components/InstructorDashboard/SmallSessionTable";
 import InstructorProfile from "../components/InstructorDashboard/InstructorProfile";
 import Calendar from "../components/InstructorDashboard/Calendar";

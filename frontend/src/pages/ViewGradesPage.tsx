@@ -1,16 +1,70 @@
-import React from 'react';
-import LabCard from './../components/Grading/LabCard';
-import Sidebar from "../components/InstructorDashboard/Sidebar";
+import React from "react";
+import LabCard from "./../components/Grading/LabCard";
+import Sidebar from "../components/Sidebar";
 import InstructorProfile from "../components/InstructorDashboard/InstructorProfile";
 import Calendar from "../components/InstructorDashboard/Calendar";
 
 const mockLabSessions = [
-  { id: '1', title: 'Lab 1: Introduction to React', date: '2024-08-15', time: '10:00 AM', group: '01', subGroup: 'A', instructorName: 'Dr. Smith', location: 'A401' },
-  { id: '2', title: 'Lab 2: State Management', date: '2024-08-22', time: '11:00 AM', group: '01', subGroup: 'B', instructorName: 'Dr. Johnson', location: 'A402' },
-  { id: '3', title: 'Lab 3: Component Lifecycle', date: '2024-08-29', time: '01:00 PM', group: '01', subGroup: 'C', instructorName: 'Dr. Davis', location: 'A403' },
-  { id: '4', title: 'Lab 4: Advanced Hooks', date: '2024-09-05', time: '02:00 PM', group: '02', subGroup: 'A', instructorName: 'Dr. Lee', location: 'A404' },
-  { id: '5', title: 'Lab 5: Routing with React Router', date: '2024-09-12', time: '10:00 AM', group: '02', subGroup: 'B', instructorName: 'Dr. Martinez', location: 'A405' },
-  { id: '6', title: 'Lab 6: Performance Optimization', date: '2024-09-19', time: '11:00 AM', group: '02', subGroup: 'C', instructorName: 'Dr. Wilson', location: 'A406' },
+  {
+    id: "1",
+    title: "Lab 1: Introduction to React",
+    date: "2024-08-15",
+    time: "10:00 AM",
+    group: "01",
+    subGroup: "A",
+    instructorName: "Dr. Smith",
+    location: "A401",
+  },
+  {
+    id: "2",
+    title: "Lab 2: State Management",
+    date: "2024-08-22",
+    time: "11:00 AM",
+    group: "01",
+    subGroup: "B",
+    instructorName: "Dr. Johnson",
+    location: "A402",
+  },
+  {
+    id: "3",
+    title: "Lab 3: Component Lifecycle",
+    date: "2024-08-29",
+    time: "01:00 PM",
+    group: "01",
+    subGroup: "C",
+    instructorName: "Dr. Davis",
+    location: "A403",
+  },
+  {
+    id: "4",
+    title: "Lab 4: Advanced Hooks",
+    date: "2024-09-05",
+    time: "02:00 PM",
+    group: "02",
+    subGroup: "A",
+    instructorName: "Dr. Lee",
+    location: "A404",
+  },
+  {
+    id: "5",
+    title: "Lab 5: Routing with React Router",
+    date: "2024-09-12",
+    time: "10:00 AM",
+    group: "02",
+    subGroup: "B",
+    instructorName: "Dr. Martinez",
+    location: "A405",
+  },
+  {
+    id: "6",
+    title: "Lab 6: Performance Optimization",
+    date: "2024-09-19",
+    time: "11:00 AM",
+    group: "02",
+    subGroup: "C",
+    instructorName: "Dr. Wilson",
+    location: "A406",
+  },
 ];
 
 const ViewGradesPage: React.FC = () => {

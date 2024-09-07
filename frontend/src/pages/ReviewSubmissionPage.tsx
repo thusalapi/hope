@@ -8,7 +8,7 @@ import GradeSelector from "../components/Grading/GradeSelector";
 const ReviewSubmissionPage: React.FC = () => {
   const navigate = useNavigate();
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
-  const studentCode = `// Dummy code example
+  const studentCode = `
 function add(a, b) {
   return a + b;
 }

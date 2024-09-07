@@ -267,6 +267,9 @@ const BigSessionTable: React.FC = () => {
                               dateFormat="yyyy/MM/dd"
                               className="input input-bordered w-full"
                               placeholderText="Date"
+                              minDate={
+                                new Date(Date.now() + 24 * 60 * 60 * 1000)
+                              }
                             />
                             <input
                               type="time"

@@ -125,6 +125,10 @@ const BigSessionTable: React.FC = () => {
     }
   };
 
+  const navigateToForm = () => {
+    navigate("/createSession");
+  };
+
   const handleDelete = async (id: string) => {
     const MySwal = withReactContent(Swal);
     MySwal.fire({

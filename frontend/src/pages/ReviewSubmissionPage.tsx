@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Sidebar from "../components/InstructorDashboard/Sidebar";
+import Sidebar from "../components/Sidebar";
 import InstructorProfile from "../components/InstructorDashboard/InstructorProfile";
 import Calendar from "../components/InstructorDashboard/Calendar";
 import GradeSelector from "../components/Grading/GradeSelector";

@@ -57,18 +57,15 @@ const ViewStudents: React.FC = () => {
         <Sidebar />
       </div>
 
-      <div className="container mx-auto flex ml-64">
-        <div className="w-2/3">
-          <div className="w-full max-w-4xl mx-auto mt-10 p-8">
-            <h2 className="text-3xl font-bold mb-6">Student Submissions</h2>
-            <Table students={mockStudentData} />
-          </div>
+      <div className="w-3/4 max-container mx-auto mt-20">
+        <div className="w-full mx-auto mt-10 p-8 ml-20">
+          <h2 className="text-3xl font-bold mb-6">Student Submissions</h2>
+          <Table students={mockStudentData} />
         </div>
-
-        <div className="w-1/3">
+        {/* <div className="w-1/3">
           <InstructorProfile />
           <Calendar />
-        </div>
+        </div> */}
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Formik, Field, Form, FieldArray, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -29,7 +29,12 @@ const validationSchema = Yup.object().shape({
   groupIds: Yup.string()
     .required("Group IDs are required")
     .matches(/^[\d.,\s]+$/, "Group IDs must be comma-separated numbers"),
-  date: Yup.date().required("Date is required").nullable(),
+  date: Yup.date()
+    .required("Date is required")
+    .min(
+      new Date(new Date().setDate(new Date().getDate())),
+      "Session date must be at least one day from today"
+    ),
   startTime: Yup.string().required("Start Time is required"),
   duration: Yup.number()
     .required("Duration is required")
@@ -45,6 +50,14 @@ const validationSchema = Yup.object().shape({
 
 const SessionForm: React.FC = () => {
   const navigate = useNavigate();
+  const [minDate, setMinDate] = useState("");
+
+  useEffect(() => {
+    // Calculate the minimum date (next day) in the required format for input[type="date"]
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // Move to next day
+    setMinDate(tomorrow.toISOString().split("T")[0]); // Format as YYYY-MM-DD
+  }, []);
 
   const displaySuccessToast = (message: string) => {
     toast.success(message, {
@@ -203,6 +216,7 @@ const SessionForm: React.FC = () => {
                   name="date"
                   type="date"
                   className="input input-bordered w-full bg-gray-200 border-gray-300 h-12"
+                  min={minDate} // Set the min date dynamically
                 />
                 <Field
                   name="startTime"
@@ -246,20 +260,19 @@ const SessionForm: React.FC = () => {
               </label>
               <FieldArray name="questions">
                 {({ push, remove }) => (
-                  <div className="space-y-2">
-                    {values.questions.map((q, index) => (
+                  <div>
+                    {values.questions.map((_, index) => (
                       <div key={index} className="flex items-center space-x-2">
                         <Field
                           name={`questions.${index}.question`}
-                          type="text"
-                          className="input input-bordered w-full bg-gray-200 border-gray-300 h-12"
                           placeholder={`Question ${index + 1}`}
+                          className="input input-bordered w-full bg-gray-200 border-gray-300 h-12 mt-2"
                         />
                         {index > 0 && (
                           <button
                             type="button"
+                            className="btn btn-outline"
                             onClick={() => remove(index)}
-                            className="btn btn-error btn-s"
                           >
                             Remove
                           </button>
@@ -268,20 +281,27 @@ const SessionForm: React.FC = () => {
                     ))}
                     <button
                       type="button"
+                      className="btn btn-outline mt-4"
                       onClick={() => push({ question: "" })}
-                      className="btn btn-outline btn-primary mt-2"
                     >
                       Add Question
                     </button>
                   </div>
                 )}
               </FieldArray>
+              {errors.questions && touched.questions && (
+                <div className="text-red-500 text-xs mt-1">
+                  {(errors.questions as any)?.message}
+                </div>
+              )}
             </div>
 
             {/* Submit Button */}
-            <button type="submit" className="btn btn-primary w-full mt-6">
-              Create Session
-            </button>
+            <div className="form-control mt-6">
+              <button type="submit" className="btn btn-primary w-full">
+                Create Session
+              </button>
+            </div>
           </Form>
         )}
       </Formik>

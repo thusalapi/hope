@@ -29,6 +29,8 @@ export default {
 					foreground: 'hsl(var(--primary-foreground))'
 				},
 				'blue-custom': '#191919',
+				'red-custom': '#C7253E',
+				'red-custom-100': '#821131',
 				'coral-red': '#FF6452',
 				'slate-gray': '#6D6D6D',
 				'pale-blue': '#F5F6FF',

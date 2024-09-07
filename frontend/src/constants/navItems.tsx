@@ -15,7 +15,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { icon: <IoMdHome />, text: "Dashboard", path: "/dashboard" },
   { icon: <IoIosTime />, text: "Sessions", path: "/instructorSessions" },
-  { icon: <IoMdAnalytics />, text: "Reports", path: "/reports" },
+  { icon: <IoMdAnalytics />, text: "Grades", path: "/viewgrades" },
   { icon: <IoIosPerson />, text: "Profile", path: "/profile" },
   { icon: <IoIosPeople />, text: "Users", path: "/users" },
 ];

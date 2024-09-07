@@ -70,7 +70,7 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
                     Edit
                   </Button>
                   <Button
-                    className="bg-red hover:bg-red-100 text-white mr-2"
+                    className="bg-red-500 hover:bg-red-100 text-white mr-2"                    
                     onClick={() => deleteMutation.mutate(user._id!)}
                   >
                     Delete

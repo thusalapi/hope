@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { useStudentStore } from "../../stores/studentStore";
 
 interface Student {
   id: string;
@@ -13,10 +14,12 @@ interface TableProps {
   students: Student[];
 }
 
-const StudentTable: React.FC<TableProps> = ({ students }) => {
+const StudentTable: React.FC<TableProps> = () => {
   const navigate = useNavigate();
+  const { students, updateStudent } = useStudentStore();
 
-  const handleCardClick = () => {
+  const handleCardClick = (studentId: string) => {
+    updateStudent(studentId, { aiGrade: "Reviewed" });
     navigate(`/reviewsubmission`);
   };
 
@@ -45,7 +48,7 @@ const StudentTable: React.FC<TableProps> = ({ students }) => {
               <td className="py-3 px-4 text-gray-700">{student.aiGrade}</td>
               <td className="py-3 px-4">
                 <button
-                  onClick={handleCardClick}
+                  onClick={() => handleCardClick(student.id)}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg"
                 >
                   Review Submission

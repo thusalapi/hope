@@ -1,8 +1,6 @@
 import React from "react";
 import Table from "./../components/Grading/StudentTable"; // Table component to display student data
 import Sidebar from "../components/Sidebar";
-import InstructorProfile from "../components/InstructorDashboard/InstructorProfile";
-import Calendar from "../components/InstructorDashboard/Calendar";
 
 const mockStudentData = [
   {
@@ -62,10 +60,6 @@ const ViewStudents: React.FC = () => {
           <h2 className="text-3xl font-bold mb-6">Student Submissions</h2>
           <Table students={mockStudentData} />
         </div>
-        {/* <div className="w-1/3">
-          <InstructorProfile />
-          <Calendar />
-        </div> */}
       </div>
     </div>
   );

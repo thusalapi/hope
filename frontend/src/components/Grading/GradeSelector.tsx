@@ -19,7 +19,7 @@ const GradeSelector: React.FC<GradeSelectorProps> = ({
           onClick={() => onSelectGrade(grade)}
           className={`px-4 py-2 m-1 rounded-full ${
             selectedGrade === grade
-              ? "bg-blue-custom text-white"
+              ? "bg-blue-500 text-white"
               : "bg-gray-700 text-gray-300"
           }`}
         >

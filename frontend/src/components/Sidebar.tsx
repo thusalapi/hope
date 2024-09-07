@@ -20,7 +20,7 @@ const Sidebar: React.FC = () => {
   return (
     <div className="w-64 h-screen bg-white shadow-md flex flex-col">
       <div className="p-6 text-center">
-        <h1 className="text-3xl font-bold text-blue-custom">HOPE</h1>
+        <h1 className="text-3xl font-bold text-blue">HOPE</h1>
       </div>
 
       <nav className="flex flex-col p-4 flex-grow">
@@ -37,7 +37,7 @@ const Sidebar: React.FC = () => {
 
       <button
         onClick={handleLogout}
-        className="bg-red-custom hover:bg-red-custom-100 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline mt-auto mb-20 mx-4"
+        className="bg-red hover:bg-red-100 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline mt-auto mb-20 mx-4"
       >
         Logout
       </button>

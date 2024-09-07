@@ -160,7 +160,7 @@ const BigSessionTable: React.FC = () => {
       <div className="overflow-x-auto m-auto">
         <button
           onClick={navigateToForm}
-          className="btn btn-primary bg-blue-custom hover:bg-white-content text-white text-bold px-6 py-2 rounded-md mt-4 mb-4 w-full"          
+          className="btn btn-primary bg-blue-500 hover:bg-white-content text-white text-bold px-6 py-2 rounded-md mt-4 mb-4 w-full"
         >
           Create a new Lab Session
         </button>

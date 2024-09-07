@@ -64,13 +64,13 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
                 <td className="border border-gray-300 p-2">{user.role}</td>
                 <td className="border border-gray-300 p-2">
                   <Button
-                    className="bg-blue-custom hover:bg-blue-custom-600 text-white mr-2"
+                    className="bg-blue-500 hover:bg-blue-600 text-white mr-2"
                     onClick={() => onEdit(user)}
                   >
                     Edit
                   </Button>
                   <Button
-                    className="bg-red-custom hover:bg-red-custom-100 text-white mr-2"
+                    className="bg-red hover:bg-red-100 text-white mr-2"
                     onClick={() => deleteMutation.mutate(user._id!)}
                   >
                     Delete

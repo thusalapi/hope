@@ -49,7 +49,7 @@ console.log('Result:', result);
             />
             <button
               onClick={handleSubmit}
-              className="mt-4 px-4 py-2 bg-blue-custom-600 rounded-lg text-white"
+              className="mt-4 px-4 py-2 bg-blue-600 rounded-lg text-white"
             >
               Submit
             </button>

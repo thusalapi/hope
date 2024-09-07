@@ -20,7 +20,7 @@ const Sidebar: React.FC = () => {
   return (
     <div className="w-64 h-screen bg-white shadow-md flex flex-col">
       <div className="p-6 text-center">
-        <h1 className="text-3xl font-bold text-blue">HOPE</h1>
+        <h1 className="text-3xl font-bold text-blue-600">HOPE</h1>
       </div>
 
       <nav className="flex flex-col p-4 flex-grow">

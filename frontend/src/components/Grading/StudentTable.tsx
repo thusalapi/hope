@@ -46,7 +46,7 @@ const StudentTable: React.FC<TableProps> = ({ students }) => {
               <td className="py-3 px-4">
                 <button
                   onClick={handleCardClick}
-                  className="px-4 py-2 bg-blue-500-600 text-white rounded-lg"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg"
                 >
                   Review Submission
                 </button>

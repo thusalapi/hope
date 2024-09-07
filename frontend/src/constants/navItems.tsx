@@ -3,6 +3,7 @@ import {
   IoIosPeople,
   IoMdAnalytics,
   IoIosPerson,
+  IoIosTime,
 } from "react-icons/io";
 
 export interface NavItem {
@@ -13,7 +14,8 @@ export interface NavItem {
 
 export const NAV_ITEMS: NavItem[] = [
   { icon: <IoMdHome />, text: "Dashboard", path: "/dashboard" },
-  { icon: <IoIosPeople />, text: "Sessions", path: "/instructorSessions" },
+  { icon: <IoIosTime />, text: "Sessions", path: "/instructorSessions" },
   { icon: <IoMdAnalytics />, text: "Reports", path: "/reports" },
   { icon: <IoIosPerson />, text: "Profile", path: "/profile" },
+  { icon: <IoIosPeople />, text: "Users", path: "/users" },
 ];

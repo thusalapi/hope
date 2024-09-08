@@ -223,7 +223,7 @@ const BigSessionTable: React.FC = () => {
                         </button>
                         <button
                           onClick={() => handleJoin(session._id)}
-                          className="btn btn-outline btn-secondary"
+                          className="btn btn-outline btn-success"
                         >
                           Join
                         </button>

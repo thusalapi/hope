@@ -1,11 +1,8 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { getUsers, deleteUser } from "../../services/userApi";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { createUser, updateUser } from "../../services/userApi";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 
 interface User {
   _id?: string;
@@ -16,132 +13,101 @@ interface User {
   subGroup?: string;
 }
 
-interface UserFormProps {
-  user?: User;
-  onFormSubmit: () => void;
+interface UserListProps {
+  onEdit: (user: User) => void;
 }
 
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  role: Yup.string().required("Role is required"),
-  batch: Yup.string(),
-  subGroup: Yup.string(),
-});
-
-const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
+const UserList: React.FC<UserListProps> = ({ onEdit }) => {
   const queryClient = useQueryClient();
 
-  const createMutation = useMutation({
-    mutationFn: createUser,
+  const {
+    data: users = [],
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["users"],
+    queryFn: getUsers,
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
-      onFormSubmit();
     },
   });
 
-  const updateMutation = useMutation({
-    mutationFn: ({ id, data }: { id: string; data: User }) =>
-      updateUser(id, data),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["users"] });
-      onFormSubmit();
-    },
-  });
-
-  const initialValues: User = {
-    name: user?.name || "",
-    email: user?.email || "",
-    role: user?.role || "Student",
-    batch: user?.batch || "",
-    subGroup: user?.subGroup || "",
-  };
-
-  const handleSubmit = async (values: User, { setSubmitting }: any) => {
-    try {
-      if (user?._id) {
-        await updateMutation.mutateAsync({ id: user._id, data: values });
-      } else {
-        await createMutation.mutateAsync(values);
+  const handleDelete = (userId: string) => {
+    // Show SweetAlert confirmation before deletion
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this user?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteMutation.mutate(userId, {
+          onSuccess: () => {
+            Swal.fire("Deleted!", "The user has been deleted.", "success");
+          },
+          onError: () => {
+            Swal.fire("Error!", "An error occurred while deleting.", "error");
+          },
+        });
       }
-    } catch (error) {
-      console.error("Error submitting form:", error);
-    } finally {
-      setSubmitting(false);
-    }
+    });
   };
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>An error occurred: {(error as Error).message}</div>;
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      {({ isSubmitting }) => (
-        <Form className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name:</Label>
-            <Field name="name" as={Input} />
-            <ErrorMessage
-              name="name"
-              component="div"
-              className="text-red-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email:</Label>
-            <Field name="email" type="email" as={Input} />
-            <ErrorMessage
-              name="email"
-              component="div"
-              className="text-red-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="role">Role:</Label>
-            <Field
-              name="role"
-              as="select"
-              className="border border-gray-300 rounded p-2 w-full"
-            >
-              <option value="Student">Student</option>
-              <option value="Instructor">Instructor</option>
-            </Field>
-            <ErrorMessage
-              name="role"
-              component="div"
-              className="text-red-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="batch">Batch:</Label>
-            <Field name="batch" as={Input} />
-            <ErrorMessage
-              name="batch"
-              component="div"
-              className="text-red-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="subGroup">Sub Group:</Label>
-            <Field name="subGroup" as={Input} />
-            <ErrorMessage
-              name="subGroup"
-              component="div"
-              className="text-red-500"
-            />
-          </div>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
-          >
-            {user ? "Update User" : "Create User"}
-          </Button>
-        </Form>
+    <div className="p-4">
+      {users.length === 0 ? (
+        <p>No users found.</p>
+      ) : (
+        <table className="w-full border-collapse border border-gray-300">
+          <thead>
+            <tr>
+              <th className="border border-gray-300 p-2">Name</th>
+              <th className="border border-gray-300 p-2">Email</th>
+              <th className="border border-gray-300 p-2">Batch</th>
+              <th className="border border-gray-300 p-2">Sub Group</th>
+              <th className="border border-gray-300 p-2">Role</th>
+              <th className="border border-gray-300 p-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {users.map((user: User) => (
+              <tr key={user._id}>
+                <td className="border border-gray-300 p-2">{user.name}</td>
+                <td className="border border-gray-300 p-2">{user.email}</td>
+                <td className="border border-gray-300 p-2">{user.batch}</td>
+                <td className="border border-gray-300 p-2">{user.subGroup}</td>
+                <td className="border border-gray-300 p-2">{user.role}</td>
+                <td className="border border-gray-300 p-2">
+                  <Button
+                    className="bg-blue-500 hover:bg-blue-600 text-white mr-2"
+                    onClick={() => onEdit(user)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    className="bg-red-500 hover:bg-red-600 text-white"
+                    onClick={() => handleDelete(user._id!)}
+                  >
+                    Delete
+                  </Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
-    </Formik>
+    </div>
   );
 };
 
-export default UserForm;
+export default UserList;

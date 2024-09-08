@@ -2,6 +2,7 @@ import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUsers, deleteUser } from "../../services/userApi";
 import { Button } from "@/components/ui/button";
+import Swal from "sweetalert2";
 
 interface User {
   _id?: string;
@@ -34,6 +35,30 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
+
+  const handleDelete = (userId: string) => {
+    // Show SweetAlert confirmation before deletion
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this user?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteMutation.mutate(userId, {
+          onSuccess: () => {
+            Swal.fire("Deleted!", "The user has been deleted.", "success");
+          },
+          onError: () => {
+            Swal.fire("Error!", "An error occurred while deleting.", "error");
+          },
+        });
+      }
+    });
+  };
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>An error occurred: {(error as Error).message}</div>;
@@ -70,8 +95,8 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
                     Edit
                   </Button>
                   <Button
-                    className="bg-red-500 hover:bg-red-100 text-white mr-2"                    
-                    onClick={() => deleteMutation.mutate(user._id!)}
+                    className="bg-red-500 hover:bg-red-600 text-white"
+                    onClick={() => handleDelete(user._id!)}
                   >
                     Delete
                   </Button>

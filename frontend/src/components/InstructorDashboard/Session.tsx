@@ -28,6 +28,7 @@ const Session: React.FC = () => {
         const response = await axios.get(`http://localhost:5000/session/${id}`);
         setSession(response.data);
         setLoading(false);
+        localStorage.setItem("sessionId", response.data._id);
       } catch (err) {
         setError("Failed to fetch session details");
         setLoading(false);
@@ -36,6 +37,19 @@ const Session: React.FC = () => {
 
     fetchSessionDetails();
   }, [id]);
+
+  const setProjectPath = () => {
+    const path = prompt("Please enter your project path:");
+    if (path) {
+      localStorage.setItem("projectPath", path);
+      console.log("Project path set to:", path);
+    }
+  };
+
+  const defaultPath = "C:/Users/Thusala/Desktop/LAB";
+  const projectPath = localStorage.getItem("projectPath") || defaultPath;
+
+  console.log("Using project path:", projectPath);
 
   if (loading) return <p>Loading session details...</p>;
   if (error) return <p className="text-red-500">{error}</p>;
@@ -81,6 +95,23 @@ const Session: React.FC = () => {
         ) : (
           <p>No lab sheet questions available for this session.</p>
         )}
+      </div>
+
+      <div className="mt-4">
+        <a
+          href={`vscode://file/${projectPath}?sessionId=${localStorage.getItem(
+            "sessionId"
+          )}&authToken=${localStorage.getItem("authToken")}`}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Open in VS Code
+        </a>
+        <button
+          onClick={setProjectPath}
+          className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 ml-4"
+        >
+          Set Project Path
+        </button>
       </div>
     </div>
   );

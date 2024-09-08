@@ -93,8 +93,7 @@ const BigSessionTable: React.FC = () => {
   };
 
   const handleJoin = (id: string) => {
-    console.log(`Join session with id: ${id}`);
-    // Implement join logic here
+    navigate(`/session/${id}`);
   };
 
   const handleCancelEdit = () => {

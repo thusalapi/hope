@@ -13,6 +13,7 @@ import ViewStudents from "./pages/ViewStudents";
 import ReviewSubmissionPage from "./pages/ReviewSubmissionPage";
 import UserManagement from "./pages/UserManagement";
 import InstructorSessionsPage from "./pages/InstructorSessionsPage";
+import InstructorSession from "./pages/InstructorSession";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +47,10 @@ const router = createBrowserRouter([
   {
     path: "/instructorSessions",
     element: <InstructorSessionsPage />,
+  },
+  {
+    path: "/session/:id",
+    element: <InstructorSession />,
   },
   {
     path: "/users",

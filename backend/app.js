@@ -6,6 +6,7 @@ const authRoutes = require('./routes/authRoutes');
 const profileRoutes = require('./routes/profileRoutes');
 const sessionRoutes = require('./routes/sessionRoutes');
 const userRoutes = require('./routes/userRoutes');
+const userReportRoutes = require('./routes/userReportRoutes');
 
 
 const dotenv = require('dotenv');
@@ -30,6 +31,7 @@ app.use('/auth', authRoutes);
 app.use('/profile', profileRoutes);
 app.use('/session', sessionRoutes);
 app.use('/users', userRoutes);
+app.use('/generate-users-report', userReportRoutes);
 
 app.use('/grade', grade);
 

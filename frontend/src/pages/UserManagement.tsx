@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import ReportButton from "@/components/UserDashboard/ReportButton";
 
 interface User {
   _id?: string;
@@ -71,6 +72,7 @@ const UserManagement: React.FC = () => {
           </div>
           <UserList onEdit={handleEditUser} />
         </div>
+        <ReportButton />
       </div>
     </div>
   );

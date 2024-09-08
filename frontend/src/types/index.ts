@@ -4,4 +4,5 @@ export interface User {
   email: string;
   batch: string;
   subGroup: string;
+  role: string;
 }

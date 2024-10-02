@@ -7,6 +7,7 @@ interface Profile {
   sessions: number;
   students: number;
   role: string;
+  profilePicture?: string; // Include profilePicture as an optional field
 }
 
 const InstructorProfile: React.FC = () => {
@@ -40,13 +41,14 @@ const InstructorProfile: React.FC = () => {
   if (!profile) {
     return <div>No profile data available.</div>;
   }
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 m-4">
       <div className="flex flex-col items-center">
-        {/* Placeholder for Profile Picture */}
+        {/* Profile Picture */}
         <div className="w-24 h-24 mb-4 rounded-full bg-gray-200 overflow-hidden">
           <img
-            src="../../../src/assets/avatar.png"
+            src={profile.profilePicture || "../../../src/assets/avatar.png"} // Use profile picture from profile state
             alt="Profile"
             className="w-full h-full object-cover"
           />
@@ -59,15 +61,17 @@ const InstructorProfile: React.FC = () => {
         <div className="mt-4 w-full">
           <div className="flex justify-between text-gray-700 mb-2">
             <span>Sessions:</span>
-            <span>12</span>
+            <span>{profile.sessions}</span>{" "}
+            {/* Display actual sessions count */}
           </div>
           <div className="flex justify-between text-gray-700 mb-2">
             <span>Students:</span>
-            <span>150</span>
+            <span>{profile.students}</span>{" "}
+            {/* Display actual students count */}
           </div>
           <div className="flex justify-between text-gray-700 mb-2">
             <span>Email:</span>
-            <span>{profile.email}</span>
+            <span>{profile.email}</span> {/* Display user's email */}
           </div>
         </div>
       </div>

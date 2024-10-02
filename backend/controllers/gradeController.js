@@ -16,13 +16,14 @@ const getEvaluation = async (req, res) => {
 // Create a new evaluation
 const createEvaluation = async (req, res) => {
     try {
-        const { sessionId, activityId, studentId, codeSubmission, aiEvaluation } = req.body;
+        const { sessionId, activityId, studentId, codeSubmission, aiEvaluation, instructorEvaluation} = req.body;
         const newEvaluation = new grade({
             sessionId,
             activityId,
             studentId,
             codeSubmission,
-            aiEvaluation
+            aiEvaluation,
+            instructorEvaluation
         });
         const savedEvaluation = await newEvaluation.save();
         res.status(201).json(savedEvaluation);

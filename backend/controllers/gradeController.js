@@ -16,17 +16,21 @@ const getEvaluation = async (req, res) => {
 // Create a new evaluation
 const createEvaluation = async (req, res) => {
     try {
-        const { sessionId, activityId, studentId, codeSubmission, aiEvaluation, instructorEvaluation} = req.body;
+        const { sessionId, activityId, studentId, studentName, email, codeSubmission, aiEvaluation, instructorEvaluation, uploadedAt } = req.body;
         const newEvaluation = new grade({
             sessionId,
             activityId,
             studentId,
+            studentName,
+            email,
             codeSubmission,
             aiEvaluation,
-            instructorEvaluation
+            instructorEvaluation,
+            uploadedAt
         });
-        const savedEvaluation = await newEvaluation.save();
-        res.status(201).json(savedEvaluation);
+
+        await newEvaluation.save();
+        res.status(201).json(newEvaluation);
     } catch (error) {
         res.status(500).json({ message: 'Error creating evaluation' });
     }

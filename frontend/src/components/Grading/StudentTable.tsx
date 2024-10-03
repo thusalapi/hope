@@ -1,65 +1,91 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import { useStudentStore } from "../../stores/studentStore";
+import React from 'react';
 
-interface Student {
-  id: string;
-  name: string;
-  email: string;
-  uploadedTime: string;
-  aiGrade: string;
+interface Evaluation {
+    sessionId: string;
+    activityId: string;
+    studentId: string;
+    studentName: string;
+    email: string;
+    codeSubmission: string;
+    aiEvaluation?: {
+        score: number;
+        feedback: string;
+    };
+    instructorEvaluation?: {
+        score: number;
+        feedback: string;
+    };
+    uploadedAt: string;
 }
 
-interface TableProps {
-  students: Student[];
-}
+const StudentTable: React.FC<{ evaluation: Evaluation }> = ({ evaluation }) => {
+    if (!evaluation) {
+        return <div>No evaluation data available</div>;
+    }
 
-const StudentTable: React.FC<TableProps> = () => {
-  const navigate = useNavigate();
-  const { students, updateStudent } = useStudentStore();
-
-  const handleCardClick = (studentId: string) => {
-    updateStudent(studentId, { aiGrade: "Reviewed" });
-    navigate(`/reviewsubmission`);
-  };
-
-  return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
-        <thead>
-          <tr className="bg-gray-100 border-b">
-            <th className="py-3 px-4 text-left text-gray-600">Student ID</th>
-            <th className="py-3 px-4 text-left text-gray-600">Name</th>
-            <th className="py-3 px-4 text-left text-gray-600">Email</th>
-            <th className="py-3 px-4 text-left text-gray-600">Uploaded Time</th>
-            <th className="py-3 px-4 text-left text-gray-600">AI Grade</th>
-            <th className="py-3 px-4 text-left text-gray-600">Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {students.map((student) => (
-            <tr key={student.id} className="border-b">
-              <td className="py-3 px-4 text-gray-700">{student.id}</td>
-              <td className="py-3 px-4 text-gray-700">{student.name}</td>
-              <td className="py-3 px-4 text-gray-700">{student.email}</td>
-              <td className="py-3 px-4 text-gray-700">
-                {student.uploadedTime}
-              </td>
-              <td className="py-3 px-4 text-gray-700">{student.aiGrade}</td>
-              <td className="py-3 px-4">
-                <button
-                  onClick={() => handleCardClick(student.id)}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg"
-                >
-                  Review Submission
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+    return (
+        <div className="card">
+            <h2>Evaluation Details</h2>
+            <table>
+                <tbody>
+                    <tr>
+                        <th>Student Name</th>
+                        <td>{evaluation.studentName}</td>
+                    </tr>
+                    <tr>
+                        <th>Email</th>
+                        <td>{evaluation.email}</td>
+                    </tr>
+                    <tr>
+                        <th>Uploaded At</th>
+                        <td>{new Date(evaluation.uploadedAt).toLocaleString()}</td>
+                    </tr>
+                    <tr>
+                        <th>Session ID</th>
+                        <td>{evaluation.sessionId}</td>
+                    </tr>
+                    <tr>
+                        <th>Activity ID</th>
+                        <td>{evaluation.activityId}</td>
+                    </tr>
+                    <tr>
+                        <th>Student ID</th>
+                        <td>{evaluation.studentId}</td>
+                    </tr>
+                    <tr>
+                        <th>Code Submission</th>
+                        <td>{evaluation.codeSubmission}</td>
+                    </tr>
+                    <tr>
+                        <th>AI Evaluation</th>
+                        <td>
+                            {evaluation.aiEvaluation ? (
+                                <>
+                                    <div>Score: {evaluation.aiEvaluation.score}</div>
+                                    <div>Feedback: {evaluation.aiEvaluation.feedback}</div>
+                                </>
+                            ) : (
+                                'N/A'
+                            )}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Instructor Evaluation</th>
+                        <td>
+                            {evaluation.instructorEvaluation ? (
+                                <>
+                                    <div>Score: {evaluation.instructorEvaluation.score}</div>
+                                    <div>Feedback: {evaluation.instructorEvaluation.feedback}</div>
+                                </>
+                            ) : (
+                                'N/A'
+                            )}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    );
 };
 
 export default StudentTable;

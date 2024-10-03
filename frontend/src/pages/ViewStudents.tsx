@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import Table from "./../components/Grading/StudentTable"; // Table component to display student data
+import StudentTable from "./../components/Grading/StudentTable"; // Adjusted import for clarity
 import Sidebar from "../components/Sidebar";
 
 const ViewStudents: React.FC = () => {
@@ -8,8 +8,10 @@ const ViewStudents: React.FC = () => {
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const response = await fetch("/api/grades"); // Adjust the endpoint as needed
+        const response = await fetch("http://localhost:5000/grade"); // Adjust the endpoint as needed
+        if (!response.ok) throw new Error("Failed to fetch student data");
         const data = await response.json();
+        
         setStudentData(data);
       } catch (error) {
         console.error("Error fetching student data:", error);
@@ -28,7 +30,13 @@ const ViewStudents: React.FC = () => {
       <div className="w-3/4 max-container mx-auto mt-20">
         <div className="w-full mx-auto mt-10 p-8 ml-20">
           <h2 className="text-3xl font-bold mb-6">Student Submissions</h2>
-          <Table students={studentData} />
+          {studentData.length > 0 ? (
+            studentData.map((student, index) => (
+              <StudentTable key={index} evaluation={student} />
+            ))
+          ) : (
+            <div>No evaluations available</div>
+          )}
         </div>
       </div>
     </div>

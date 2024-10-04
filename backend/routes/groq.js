@@ -21,7 +21,7 @@ async function getGroqChatCompletion() {
     messages: [
       {
         role: "user",
-        content: "sing a song",
+        content: "return a letter, just letter nothing else",
       },
     ],
     model: "llama3-8b-8192",

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import StudentTable from "./../components/Grading/StudentTable"; // Adjusted import for clarity
 import Sidebar from "../components/Sidebar";
+import GradesReport from "@/components/Grading/GradesReport";
+
 
 const ViewStudents: React.FC = () => {
   const [studentData, setStudentData] = useState([]);
@@ -38,6 +40,7 @@ const ViewStudents: React.FC = () => {
             <div>No evaluations available</div>
           )}
         </div>
+        <GradesReport grades={studentData} />
       </div>
     </div>
   );

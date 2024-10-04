@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import NavItem from "./NavItem";
 import { NAV_ITEMS } from "../constants/navItems";
+import VsCodeOpenButton from "./Extension/VsCodeOpenButton";
+
 
 const Sidebar: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number | null>(0);
@@ -34,7 +36,8 @@ const Sidebar: React.FC = () => {
           />
         ))}
       </nav>
-
+      
+      <VsCodeOpenButton/>
       <button
         onClick={handleLogout}
         className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg focus:outline-none focus:shadow-outline mt-auto mb-20 mx-4"

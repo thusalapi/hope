@@ -6,6 +6,11 @@ import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import Sidebar from "@/components/Sidebar";
 import { motion } from "framer-motion";
+import CalendarComponent from "@/components/CalendarComponent";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
+const CLIENT_ID =
+  "808387821131-rdi2ou03d62t97g22kcqsr8k1g8kj6fr.apps.googleusercontent.com";
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -192,6 +197,10 @@ const Profile: React.FC = () => {
             </div>
           </div>
         </motion.div>
+
+        <GoogleOAuthProvider clientId={CLIENT_ID}>
+          <CalendarComponent />
+        </GoogleOAuthProvider>
       </div>
     </div>
   );

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUsers, deleteUser } from "../../services/userApi";
 import {
@@ -18,7 +17,6 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
-import { Button, CircularProgress, Typography } from "@mui/material";
 import { styled } from "@mui/system";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -43,10 +41,6 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
 
 const UserList: React.FC<UserListProps> = ({ onEdit }) => {
   const queryClient = useQueryClient();
-  const [filter, setFilter] = useState("");
-  const [roleFilter, setRoleFilter] = useState<"Student" | "Instructor" | null>(
-    null
-  );
   const [filter, setFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState<"Student" | "Instructor" | null>(
     null
@@ -78,17 +72,6 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
     console.log("Generating user report...");
   };
 
-  const filteredUsers = users.filter((user: User) => {
-    const matchesName = user.name.toLowerCase().includes(filter.toLowerCase());
-    const matchesRole = roleFilter === null || user.role === roleFilter;
-
-    return matchesName && matchesRole;
-  });
-
-  const handleGenerateReport = () => {
-    console.log("Generating user report...");
-  };
-
   if (isLoading) return <CircularProgress />;
   if (error)
     return (
@@ -98,100 +81,108 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
     );
 
   return (
-    <div className="container mx-auto p-4">
+    <Paper elevation={3} className="p-6">
+      <Typography variant="h4" gutterBottom>
+        User Management
+      </Typography>
+
       {/* Filters Section */}
-      <div className="flex justify-between items-center mb-4 bg-[#2148C0] text-white border border-gray-200 rounded-lg p-4">
-        <input
-          type="text"
-          placeholder="Filter by Name/Email"
+      <div className="flex justify-between items-center mb-6 gap-4">
+        <TextField
+          label="Filter by Name/Email"
+          variant="outlined"
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
-          className="p-2 border rounded w-1/3 text-black"
+          className="flex-grow"
         />
-        <div className="flex space-x-2">
-          <Button
+        <div className="flex gap-2">
+          <Chip
+            label="Student"
             onClick={() => setRoleFilter("Student")}
-            className={`px-4 py-2 rounded ${
-              roleFilter === "Student"
-                ? "bg-[#E67E22]"
-                : "bg-[#E67E22] hover:bg-opacity-80"
-            }`}
-          >
-            Student
-          </Button>
-          <Button
+            color={roleFilter === "Student" ? "primary" : "default"}
+            clickable
+          />
+          <Chip
+            label="Instructor"
             onClick={() => setRoleFilter("Instructor")}
-            className={`px-4 py-2 rounded ${
-              roleFilter === "Instructor"
-                ? "bg-[#2ECC71]"
-                : "bg-[#2ECC71] hover:bg-opacity-80"
-            }`}
-          >
-            Instructor
-          </Button>
-          <Button
+            color={roleFilter === "Instructor" ? "primary" : "default"}
+            clickable
+          />
+          <Chip
+            label="Reset"
             onClick={() => setRoleFilter(null)}
-            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
-          >
-            Reset
-          </Button>
+            variant="outlined"
+            clickable
+          />
         </div>
-        <Button
-          onClick={handleGenerateReport}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Generate Report
-        </Button>
+        <Tooltip title="Generate Report">
+          <IconButton onClick={handleGenerateReport} color="primary">
+            <DescriptionIcon />
+          </IconButton>
+        </Tooltip>
       </div>
 
       {/* User Table */}
-      <div className="bg-white border border-gray-200 rounded-lg p-4 mt-0">
-        <h2 className="text-xl font-bold mb-6">User List</h2>
-        {filteredUsers.length === 0 ? (
-          <Typography>No users found.</Typography>
-        ) : (
-          <table className="min-w-full border-collapse">
-            <thead>
-              <tr>
-                <th className="border-b py-2 text-left">Name</th>
-                <th className="border-b py-2 text-left">Email</th>
-                <th className="border-b py-2 text-left">Role</th>
-                <th className="border-b py-2 text-left">Batch</th>
-                <th className="border-b py-2 text-left">Sub Group</th>
-                <th className="border-b py-2 text-left">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.map((user: User) => (
-                <tr key={user._id} className="hover:bg-gray-100">
-                  <td className="border-b py-2">{user.name}</td>
-                  <td className="border-b py-2">{user.email}</td>
-                  <td className="border-b py-2">{user.role}</td>
-                  <td className="border-b py-2">{user.batch || "N/A"}</td>
-                  <td className="border-b py-2">{user.subGroup || "N/A"}</td>
-                  <td className="border-b py-2 flex space-x-2">
-                    <Button
-                      variant="contained"
-                      onClick={() => onEdit(user)}
-                      className="bg-[#F1C40F] text-white hover:bg-[#D4AC0D]"
-                    >
-                      Edit
-                    </Button>
-                    <Button
-                      variant="contained"
-                      onClick={() => deleteMutation.mutate(user._id!)}
-                      className="bg-red-500 text-white hover:bg-red-700"
-                    >
-                      Delete
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        )}
-      </div>
-    </div>
+      <TableContainer component={Paper} elevation={1}>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell>Email</StyledTableCell>
+              <StyledTableCell>Role</StyledTableCell>
+              <StyledTableCell>Batch</StyledTableCell>
+              <StyledTableCell>Sub Group</StyledTableCell>
+              <StyledTableCell align="right">Actions</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredUsers.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6}>
+                  <Typography align="center">No users found.</Typography>
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredUsers.map((user: User) => (
+                <TableRow key={user._id} hover>
+                  <TableCell>{user.name}</TableCell>
+                  <TableCell>{user.email}</TableCell>
+                  <TableCell>
+                    <Chip
+                      label={user.role}
+                      color={user.role === "Student" ? "secondary" : "primary"}
+                      size="small"
+                    />
+                  </TableCell>
+                  <TableCell>{user.batch || "N/A"}</TableCell>
+                  <TableCell>{user.subGroup || "N/A"}</TableCell>
+                  <TableCell align="right">
+                    <Tooltip title="Edit">
+                      <IconButton
+                        onClick={() => onEdit(user)}
+                        color="primary"
+                        size="small"
+                      >
+                        <EditIcon />
+                      </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Delete">
+                      <IconButton
+                        onClick={() => deleteMutation.mutate(user._id!)}
+                        color="error"
+                        size="small"
+                      >
+                        <DeleteIcon />
+                      </IconButton>
+                    </Tooltip>
+                  </TableCell>
+                </TableRow>
+              ))
+            )}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Paper>
   );
 };
 

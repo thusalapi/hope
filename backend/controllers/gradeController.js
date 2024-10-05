@@ -13,6 +13,15 @@ const getEvaluation = async (req, res) => {
     }
 };
 
+const getALLEvaluation = async (req, res) => {
+    try {
+        const evaluation = await grade.find();
+        res.json(evaluation);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Create a new evaluation
 const createEvaluation = async (req, res) => {
     try {
@@ -68,7 +77,7 @@ const deleteEvaluation = async (req, res) => {
 };
 
 module.exports = {
-    getEvaluation,
+    getALLEvaluation,
     createEvaluation,
     updateEvaluation,
     deleteEvaluation

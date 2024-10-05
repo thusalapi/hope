@@ -3,17 +3,16 @@ import StudentTable from "./../components/Grading/StudentTable"; // Adjusted imp
 import Sidebar from "../components/Sidebar";
 import GradesReport from "@/components/Grading/GradesReport";
 
-
 const ViewStudents: React.FC = () => {
   const [studentData, setStudentData] = useState([]);
 
   useEffect(() => {
     const fetchStudentData = async () => {
       try {
-        const response = await fetch("http://localhost:5000/grade"); // Adjust the endpoint as needed
+        const response = await fetch("http://localhost:5000/grade");
         if (!response.ok) throw new Error("Failed to fetch student data");
         const data = await response.json();
-        
+
         setStudentData(data);
       } catch (error) {
         console.error("Error fetching student data:", error);

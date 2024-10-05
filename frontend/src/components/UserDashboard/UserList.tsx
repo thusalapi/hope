@@ -1,7 +1,19 @@
 import React from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUsers, deleteUser } from "../../services/userApi";
-import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Button,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
+import { styled } from "@mui/system";
 
 interface User {
   _id?: string;
@@ -15,6 +27,32 @@ interface User {
 interface UserListProps {
   onEdit: (user: User) => void;
 }
+
+const StyledTableContainer = styled(TableContainer)({
+  padding: "16px",
+  borderRadius: "25px",
+  boxShadow: "none", // Remove shadows
+});
+
+const StyledButton = styled(Button)({
+  borderRadius: "20px",
+  backgroundColor: "white",
+  color: "black",
+  "&:hover": {
+    backgroundColor: "#1976d2",
+    color: "white",
+  },
+});
+
+const DeleteButton = styled(Button)({
+  borderRadius: "20px",
+  backgroundColor: "white",
+  color: "black",
+  "&:hover": {
+    backgroundColor: "red",
+    color: "white",
+  },
+});
 
 const UserList: React.FC<UserListProps> = ({ onEdit }) => {
   const queryClient = useQueryClient();
@@ -35,53 +73,72 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
     },
   });
 
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>An error occurred: {(error as Error).message}</div>;
+  if (isLoading) return <CircularProgress />;
+  if (error)
+    return (
+      <Typography color="error">
+        An error occurred: {(error as Error).message}
+      </Typography>
+    );
 
   return (
-    <div className="p-4">
+    <StyledTableContainer component={Paper}>
       {users.length === 0 ? (
-        <p>No users found.</p>
+        <Typography>No users found.</Typography>
       ) : (
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr>
-              <th className="border border-gray-300 p-2">Name</th>
-              <th className="border border-gray-300 p-2">Email</th>
-              <th className="border border-gray-300 p-2">Batch</th>
-              <th className="border border-gray-300 p-2">Sub Group</th>
-              <th className="border border-gray-300 p-2">Role</th>
-              <th className="border border-gray-300 p-2">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+                Name
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+                Email
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+                Batch
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+                Sub Group
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+                Role
+              </TableCell>
+              <TableCell sx={{ fontWeight: "bold", fontSize: "1.1rem" }}>
+                Actions
+              </TableCell>
+            </TableRow>
+          </TableHead>
+          {/* Add line to separate header and body */}
+          <TableBody sx={{ borderTop: "2px solid #ccc" }}>
             {users.map((user: User) => (
-              <tr key={user._id}>
-                <td className="border border-gray-300 p-2">{user.name}</td>
-                <td className="border border-gray-300 p-2">{user.email}</td>
-                <td className="border border-gray-300 p-2">{user.batch}</td>
-                <td className="border border-gray-300 p-2">{user.subGroup}</td>
-                <td className="border border-gray-300 p-2">{user.role}</td>
-                <td className="border border-gray-300 p-2">
-                  <Button
-                    className="bg-blue-500 hover:bg-blue-600 text-white mr-2"
+              <TableRow key={user._id}>
+                <TableCell>{user.name}</TableCell>
+                <TableCell>{user.email}</TableCell>
+                <TableCell>{user.batch}</TableCell>
+                <TableCell>{user.subGroup}</TableCell>
+                <TableCell>{user.role}</TableCell>
+                <TableCell>
+                  <StyledButton
+                    variant="contained"
                     onClick={() => onEdit(user)}
+                    sx={{ mr: 1 }}
                   >
                     Edit
-                  </Button>
-                  <Button
-                    className="bg-red-500 hover:bg-red-100 text-white mr-2"
+                  </StyledButton>
+                  <DeleteButton
+                    variant="contained"
                     onClick={() => deleteMutation.mutate(user._id!)}
                   >
                     Delete
-                  </Button>
-                </td>
-              </tr>
+                  </DeleteButton>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       )}
-    </div>
+    </StyledTableContainer>
   );
 };
 

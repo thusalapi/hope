@@ -1,8 +1,28 @@
 import React, { useState } from "react";
+import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUsers, deleteUser } from "../../services/userApi";
+import {
+  Button,
+  CircularProgress,
+  Typography,
+  TextField,
+  Chip,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  IconButton,
+  Tooltip,
+} from "@mui/material";
 import { Button, CircularProgress, Typography } from "@mui/material";
 import { styled } from "@mui/system";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+import DescriptionIcon from "@mui/icons-material/Description";
 
 interface User {
   _id?: string;
@@ -17,8 +37,16 @@ interface UserListProps {
   onEdit: (user: User) => void;
 }
 
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  fontWeight: "bold",
+}));
+
 const UserList: React.FC<UserListProps> = ({ onEdit }) => {
   const queryClient = useQueryClient();
+  const [filter, setFilter] = useState("");
+  const [roleFilter, setRoleFilter] = useState<"Student" | "Instructor" | null>(
+    null
+  );
   const [filter, setFilter] = useState("");
   const [roleFilter, setRoleFilter] = useState<"Student" | "Instructor" | null>(
     null
@@ -39,6 +67,16 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
     },
   });
+
+  const filteredUsers = users.filter((user: User) => {
+    const matchesName = user.name.toLowerCase().includes(filter.toLowerCase());
+    const matchesRole = roleFilter === null || user.role === roleFilter;
+    return matchesName && matchesRole;
+  });
+
+  const handleGenerateReport = () => {
+    console.log("Generating user report...");
+  };
 
   const filteredUsers = users.filter((user: User) => {
     const matchesName = user.name.toLowerCase().includes(filter.toLowerCase());

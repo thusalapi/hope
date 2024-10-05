@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import InstructorProfile from "../components/InstructorDashboard/InstructorProfile";
 import Calendar from "../components/InstructorDashboard/Calendar";
@@ -7,15 +7,25 @@ import GradeSelector from "../components/Grading/GradeSelector";
 
 const ReviewSubmissionPage: React.FC = () => {
   const navigate = useNavigate();
+  const { studentId } = useParams<{ studentId: string }>(); // Get studentId from URL params
   const [selectedGrade, setSelectedGrade] = useState<string | null>(null);
-  const studentCode = `
-function add(a, b) {
-  return a + b;
-}
+  const [studentCode, setStudentCode] = useState<string | null>(null);
 
-const result = add(5, 7);
-console.log('Result:', result);
-`;
+  useEffect(() => {
+    const fetchStudentCode = async () => {
+      try {
+        const response = await fetch(`http://localhost:5000/grade/${studentId}`); // Adjust the endpoint as needed
+        if (!response.ok) throw new Error("Failed to fetch student code");
+        
+        const data = await response.json();
+        setStudentCode(data.code); // Assuming the response has a 'code' property
+      } catch (error) {
+        console.error("Error fetching student code:", error);
+      }
+    };
+
+    fetchStudentCode();
+  }, [studentId]); // Fetch code when studentId changes
 
   const handleGradeSelect = (grade: string) => {
     setSelectedGrade(grade);
@@ -35,16 +45,14 @@ console.log('Result:', result);
       <div className="container mx-auto flex ml-64">
         <div className="w-2/3">
           <div className="w-full max-w-4xl mx-auto mt-10 p-8 bg-white shadow-lg rounded-lg">
-            <h2 className="text-2xl font-bold mb-4">
-              Review Student Submission
-            </h2>
+            <h2 className="text-2xl font-bold mb-4">Review Student Submission</h2>
             <GradeSelector
               selectedGrade={selectedGrade}
               onSelectGrade={handleGradeSelect}
             />
             <textarea
               readOnly
-              value={studentCode}
+              value={studentCode || ""} // Display an empty string if studentCode is null
               className="w-full h-80 border border-gray-300 rounded-lg p-4 text-sm bg-gray-100"
             />
             <button

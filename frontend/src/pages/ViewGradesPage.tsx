@@ -3,11 +3,10 @@ import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import InstructorProfile from "../components/InstructorDashboard/InstructorProfile";
 import Calendar from "../components/InstructorDashboard/Calendar";
-import DatePicker  from 'react-datepicker';
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const mockLabSessions =
-[
+const mockLabSessions = [
   {
     id: "1",
     title: "Lab Sheet: Data Structures",
@@ -16,7 +15,7 @@ const mockLabSessions =
     time: "9:00 AM",
     group: "WD-02.01",
     instructorName: "Ms. Amara",
-    location: "A401"
+    location: "A401",
   },
   {
     id: "2",
@@ -26,7 +25,7 @@ const mockLabSessions =
     time: "10:30 AM",
     group: "WD-03.02",
     instructorName: "Mr. Ruwan",
-    location: "A402"
+    location: "A402",
   },
   {
     id: "3",
@@ -36,7 +35,7 @@ const mockLabSessions =
     time: "11:00 AM",
     group: "WE-01.01",
     instructorName: "Dr. Nalin",
-    location: "B401"
+    location: "B401",
   },
   {
     id: "4",
@@ -46,7 +45,7 @@ const mockLabSessions =
     time: "2:00 PM",
     group: "WD-04.02",
     instructorName: "Mr. Kamal",
-    location: "F1101"
+    location: "F1101",
   },
   {
     id: "5",
@@ -56,7 +55,7 @@ const mockLabSessions =
     time: "1:30 PM",
     group: "WE-02.01",
     instructorName: "Ms. Senevi",
-    location: "A403"
+    location: "A403",
   },
   {
     id: "6",
@@ -66,7 +65,7 @@ const mockLabSessions =
     time: "9:30 AM",
     group: "WD-01.02",
     instructorName: "Mr. Nihal",
-    location: "B402"
+    location: "B402",
   },
   {
     id: "7",
@@ -76,7 +75,7 @@ const mockLabSessions =
     time: "3:00 PM",
     group: "WD-02.01",
     instructorName: "Ms. Amara",
-    location: "A501"
+    location: "A501",
   },
   {
     id: "8",
@@ -86,7 +85,7 @@ const mockLabSessions =
     time: "10:00 AM",
     group: "WD-03.02",
     instructorName: "Mr. Ruwan",
-    location: "F1102"
+    location: "F1102",
   },
   {
     id: "9",
@@ -96,7 +95,7 @@ const mockLabSessions =
     time: "4:00 PM",
     group: "WE-01.01",
     instructorName: "Dr. Nalin",
-    location: "A504"
+    location: "A504",
   },
   {
     id: "10",
@@ -106,7 +105,7 @@ const mockLabSessions =
     time: "1:00 PM",
     group: "WE-02.01",
     instructorName: "Ms. Senevi",
-    location: "F1103"
+    location: "F1103",
   },
   {
     id: "11",
@@ -116,7 +115,7 @@ const mockLabSessions =
     time: "11:30 AM",
     group: "WD-01.02",
     instructorName: "Mr. Nihal",
-    location: "F1301"
+    location: "F1301",
   },
   {
     id: "12",
@@ -126,7 +125,7 @@ const mockLabSessions =
     time: "9:00 AM",
     group: "WD-02.01",
     instructorName: "Ms. Amara",
-    location: "A506"
+    location: "A506",
   },
   {
     id: "13",
@@ -136,7 +135,7 @@ const mockLabSessions =
     time: "2:00 PM",
     group: "WE-01.01",
     instructorName: "Dr. Nalin",
-    location: "F1104"
+    location: "F1104",
   },
   {
     id: "14",
@@ -146,7 +145,7 @@ const mockLabSessions =
     time: "3:30 PM",
     group: "WD-04.02",
     instructorName: "Mr. Kamal",
-    location: "F1105"
+    location: "F1105",
   },
   {
     id: "15",
@@ -156,7 +155,7 @@ const mockLabSessions =
     time: "11:00 AM",
     group: "WE-02.01",
     instructorName: "Ms. Senevi",
-    location: "A507"
+    location: "A507",
   },
   {
     id: "16",
@@ -166,7 +165,7 @@ const mockLabSessions =
     time: "1:00 PM",
     group: "WD-01.02",
     instructorName: "Mr. Nihal",
-    location: "F1106"
+    location: "F1106",
   },
   {
     id: "17",
@@ -176,7 +175,7 @@ const mockLabSessions =
     time: "10:00 AM",
     group: "WD-02.01",
     instructorName: "Ms. Amara",
-    location: "A508"
+    location: "A508",
   },
   {
     id: "18",
@@ -186,7 +185,7 @@ const mockLabSessions =
     time: "2:30 PM",
     group: "WE-01.01",
     instructorName: "Dr. Nalin",
-    location: "F1302"
+    location: "F1302",
   },
   {
     id: "19",
@@ -196,7 +195,7 @@ const mockLabSessions =
     time: "9:00 AM",
     group: "WD-04.02",
     instructorName: "Mr. Kamal",
-    location: "F1107"
+    location: "F1107",
   },
   {
     id: "20",
@@ -206,15 +205,43 @@ const mockLabSessions =
     time: "11:00 AM",
     group: "WE-02.01",
     instructorName: "Ms. Senevi",
-    location: "F1108"
+    location: "F1108",
   },
 ];
 
-const groups = ["WD-02.01", "WD-03.02", "WE-01.01", "WD-04.02", "WE-02.01", "WD-01.02"];
-const modules = ["IT201", "SE301", "DS102", "IT305", "DS202", "IT101", "DS301", "IM203"];
-const instructors = ["Ms. Amara", "Mr. Ruwan", "Dr. Nalin", "Mr. Kamal", "Ms. Senevi", "Mr. Nihal"];
-const titles = ["Lab Sheet: Data Structures", "Lab Sheet: Software Engineering Concepts", "Lab Sheet: Algorithms", "Lab Sheet: Advanced Databases", "Lab Sheet: Machine Learning Basics"];
-
+const groups = [
+  "WD-02.01",
+  "WD-03.02",
+  "WE-01.01",
+  "WD-04.02",
+  "WE-02.01",
+  "WD-01.02",
+];
+const modules = [
+  "IT201",
+  "SE301",
+  "DS102",
+  "IT305",
+  "DS202",
+  "IT101",
+  "DS301",
+  "IM203",
+];
+const instructors = [
+  "Ms. Amara",
+  "Mr. Ruwan",
+  "Dr. Nalin",
+  "Mr. Kamal",
+  "Ms. Senevi",
+  "Mr. Nihal",
+];
+const titles = [
+  "Lab Sheet: Data Structures",
+  "Lab Sheet: Software Engineering Concepts",
+  "Lab Sheet: Algorithms",
+  "Lab Sheet: Advanced Databases",
+  "Lab Sheet: Machine Learning Basics",
+];
 
 const ViewGradesPage: React.FC = () => {
   const navigate = useNavigate();
@@ -229,8 +256,11 @@ const ViewGradesPage: React.FC = () => {
   const [showInstructorOptions, setShowInstructorOptions] = useState(false);
   const [showTitleOptions, setShowTitleOptions] = useState(false);
 
-  const handleFilterChange = (setter: React.Dispatch<React.SetStateAction<string[]>>, value: string) => {
-    setter((prev) => 
+  const handleFilterChange = (
+    setter: React.Dispatch<React.SetStateAction<string[]>>,
+    value: string
+  ) => {
+    setter((prev) =>
       prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
     );
   };
@@ -238,9 +268,12 @@ const ViewGradesPage: React.FC = () => {
   const filteredLabSessions = mockLabSessions.filter((session) => {
     return (
       (selectedGroup.length === 0 || selectedGroup.includes(session.group)) &&
-      (selectedModule.length === 0 || selectedModule.includes(session.moduleCode)) &&
-      (!selectedDate || selectedDate.toISOString().split('T')[0] === session.date) &&
-      (selectedInstructor.length === 0 || selectedInstructor.includes(session.instructorName)) &&
+      (selectedModule.length === 0 ||
+        selectedModule.includes(session.moduleCode)) &&
+      (!selectedDate ||
+        selectedDate.toISOString().split("T")[0] === session.date) &&
+      (selectedInstructor.length === 0 ||
+        selectedInstructor.includes(session.instructorName)) &&
       (selectedTitle.length === 0 || selectedTitle.includes(session.title))
     );
   });
@@ -271,11 +304,16 @@ const ViewGradesPage: React.FC = () => {
                 {showGroupOptions && (
                   <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
                     {groups.map((group) => (
-                      <label key={group} className="block p-2 hover:bg-gray-200">
+                      <label
+                        key={group}
+                        className="block p-2 hover:bg-gray-200"
+                      >
                         <input
                           type="checkbox"
                           checked={selectedGroup.includes(group)}
-                          onChange={() => handleFilterChange(setSelectedGroup, group)}
+                          onChange={() =>
+                            handleFilterChange(setSelectedGroup, group)
+                          }
                         />
                         {group}
                       </label>
@@ -294,11 +332,16 @@ const ViewGradesPage: React.FC = () => {
                 {showModuleOptions && (
                   <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
                     {modules.map((module) => (
-                      <label key={module} className="block p-2 hover:bg-gray-200">
+                      <label
+                        key={module}
+                        className="block p-2 hover:bg-gray-200"
+                      >
                         <input
                           type="checkbox"
                           checked={selectedModule.includes(module)}
-                          onChange={() => handleFilterChange(setSelectedModule, module)}
+                          onChange={() =>
+                            handleFilterChange(setSelectedModule, module)
+                          }
                         />
                         {module}
                       </label>
@@ -317,11 +360,16 @@ const ViewGradesPage: React.FC = () => {
                 {showTitleOptions && (
                   <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
                     {titles.map((title) => (
-                      <label key={title} className="block p-2 hover:bg-gray-200">
+                      <label
+                        key={title}
+                        className="block p-2 hover:bg-gray-200"
+                      >
                         <input
                           type="checkbox"
                           checked={selectedTitle.includes(title)}
-                          onChange={() => handleFilterChange(setSelectedTitle, title)}
+                          onChange={() =>
+                            handleFilterChange(setSelectedTitle, title)
+                          }
                         />
                         {title}
                       </label>
@@ -340,11 +388,19 @@ const ViewGradesPage: React.FC = () => {
                 {showInstructorOptions && (
                   <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
                     {instructors.map((instructor) => (
-                      <label key={instructor} className="block p-2 hover:bg-gray-200">
+                      <label
+                        key={instructor}
+                        className="block p-2 hover:bg-gray-200"
+                      >
                         <input
                           type="checkbox"
                           checked={selectedInstructor.includes(instructor)}
-                          onChange={() => handleFilterChange(setSelectedInstructor, instructor)}
+                          onChange={() =>
+                            handleFilterChange(
+                              setSelectedInstructor,
+                              instructor
+                            )
+                          }
                         />
                         {instructor}
                       </label>
@@ -366,44 +422,66 @@ const ViewGradesPage: React.FC = () => {
               </div>
             </div>
 
-<div style={{ maxHeight: '750px', overflowY: 'auto', border: '1px solid #e2e8f0' }}>
-  <table className="min-w-full border-collapse border border-gray-300">
-    <thead>
-      <tr className="bg-blue-600 text-white">
-        <th className="border border-gray-300 p-2">Title</th>
-        <th className="border border-gray-300 p-2">Module Code</th>
-        <th className="border border-gray-300 p-2">Date</th>
-        <th className="border border-gray-300 p-2">Time</th>
-        <th className="border border-gray-300 p-2">Group</th>
-        <th className="border border-gray-300 p-2">Instructor</th>
-        <th className="border border-gray-300 p-2">Location</th>
-        <th className="border border-gray-300 p-2">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {filteredLabSessions.map((session) => (
-        <tr key={session.id} className="hover:bg-gray-100 transition duration-200">
-          <td className="border border-gray-300 p-2">{session.title}</td>
-          <td className="border border-gray-300 p-2">{session.moduleCode}</td>
-          <td className="border border-gray-300 p-2">{session.date}</td>
-          <td className="border border-gray-300 p-2">{session.time}</td>
-          <td className="border border-gray-300 p-2">{session.group}</td>
-          <td className="border border-gray-300 p-2">{session.instructorName}</td>
-          <td className="border border-gray-300 p-2">{session.location}</td>
-          <td className="border border-gray-300 p-2">
-            <button
-              className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 transition duration-200"
-              onClick={() => handleViewSubmission(session.id)}
+            <div
+              style={{
+                maxHeight: "750px",
+                overflowY: "auto",
+                border: "1px solid #e2e8f0",
+              }}
             >
-              View Submission
-            </button>
-          </td>
-        </tr>
-      ))}
-    </tbody>
-  </table>
-</div>
-
+              <table className="min-w-full border-collapse border border-gray-300">
+                <thead>
+                  <tr className="bg-blue-600 text-white">
+                    <th className="border border-gray-300 p-2">Title</th>
+                    <th className="border border-gray-300 p-2">Module Code</th>
+                    <th className="border border-gray-300 p-2">Date</th>
+                    <th className="border border-gray-300 p-2">Time</th>
+                    <th className="border border-gray-300 p-2">Group</th>
+                    <th className="border border-gray-300 p-2">Instructor</th>
+                    <th className="border border-gray-300 p-2">Location</th>
+                    <th className="border border-gray-300 p-2">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredLabSessions.map((session) => (
+                    <tr
+                      key={session.id}
+                      className="hover:bg-gray-100 transition duration-200"
+                    >
+                      <td className="border border-gray-300 p-2">
+                        {session.title}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {session.moduleCode}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {session.date}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {session.time}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {session.group}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {session.instructorName}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        {session.location}
+                      </td>
+                      <td className="border border-gray-300 p-2">
+                        <button
+                          className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 transition duration-200"
+                          onClick={() => handleViewSubmission(session.id)}
+                        >
+                          View Submission
+                        </button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
 

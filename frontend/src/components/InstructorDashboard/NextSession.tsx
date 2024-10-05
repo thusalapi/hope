@@ -58,7 +58,7 @@ const NextSession: React.FC = () => {
   }
 
   return (
-    <div className="bg-blue-500 text-white p-6 rounded-lg shadow-lg m-4">
+    <div className="bg-new-blue text-white p-6 rounded-3xl shadow-lg m-4">
       <h4 className="text-2xl font-bold">Next Session</h4>
       <div className="flex items-center justify-between">
         <div>

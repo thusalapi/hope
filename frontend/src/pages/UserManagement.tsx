@@ -30,16 +30,6 @@ const UserManagement: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const handleFormSubmit = () => {
-    setSelectedUser(undefined);
-    setIsFormOpen(false);
-  };
-
-  const handleDialogClose = () => {
-    setSelectedUser(undefined);
-    setIsFormOpen(false);
-  };
-
   return (
     <div className="flex h-screen">
       <div className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white z-50">

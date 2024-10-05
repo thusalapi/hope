@@ -66,7 +66,7 @@ const Calendar: React.FC = () => {
         <div
           key={day}
           className={`flex items-center justify-center border h-12 ${
-            isSessionDay ? "bg-blue-500 text-white" : "bg-gray-100"
+            isSessionDay ? "bg-new-blue text-white" : "bg-gray-100"
           }`}
         >
           {day}
@@ -86,7 +86,7 @@ const Calendar: React.FC = () => {
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg shadow-md p-4 m-4">
+    <div className="bg-white border border-gray-200 rounded-xl shadow-md p-4 m-4">
       <div className="flex justify-between mb-2">
         <button
           onClick={() => changeMonth(-1)}

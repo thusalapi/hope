@@ -53,19 +53,19 @@ const StudentTable: React.FC<{ evaluations: Evaluation[] }> = ({ evaluations }) 
         <div className="flex space-x-2">
           <button
             onClick={() => setScoreFilter("weak")}
-            className={`px-4 py-2 rounded border border-[#E67E22] text-[#E67E22] ${scoreFilter === "weak" ? "bg-[#E67E22] text-white" : "bg-white hover:bg-[#E67E22] hover:text-white"}`}
+            className={`px-4 py-2 rounded border border-[#E67E22] text-${scoreFilter === "weak" ? "white" : "[#E67E22]"} ${scoreFilter === "weak" ? "bg-[#E67E22]" : "bg-white hover:bg-[#E67E22] hover:text-white"}`}
           >
             Weak
           </button>
           <button
             onClick={() => setScoreFilter("average")}
-            className={`px-4 py-2 rounded border border-[#F1C40F] text-[#F1C40F] ${scoreFilter === "average" ? "bg-[#F1C40F] text-white" : "bg-white hover:bg-[#F1C40F] hover:text-white"}`}
+            className={`px-4 py-2 rounded border border-[#F1C40F] text-${scoreFilter === "average" ? "white" : "[#F1C40F]"} ${scoreFilter === "average" ? "bg-[#F1C40F]" : "bg-white hover:bg-[#F1C40F] hover:text-white"}`}
           >
             Average
           </button>
           <button
             onClick={() => setScoreFilter("good")}
-            className={`px-4 py-2 rounded border border-[#2ECC71] text-[#2ECC71] ${scoreFilter === "good" ? "bg-[#2ECC71] text-white" : "bg-white hover:bg-[#2ECC71] hover:text-white"}`}
+            className={`px-4 py-2 rounded border border-[#2ECC71] text-${scoreFilter === "good" ? "white" : "[#2ECC71]"} ${scoreFilter === "good" ? "bg-[#2ECC71]" : "bg-white hover:bg-[#2ECC71] hover:text-white"}`}
           >
             Good
           </button>

@@ -1,12 +1,12 @@
 .animated-gradient {
-    background: linear-gradient(60deg, #4a90e2, #6a5acd, #b0e0e6);
+    /* background: linear-gradient(60deg, #4a90e2, #6a5acd, #b0e0e6); */
+    background: linear-gradient(60deg, #003465, #264eca, #d1dbff);
     background-size: 300% 300%;
     position: relative;
     overflow: hidden;
     animation: gradientBG 10s ease infinite;
   }
   
-  /* Gradient Animation */
   @keyframes gradientBG {
     0% {
       background-position: 0% 50%;
@@ -19,7 +19,6 @@
     }
   }
   
-  /* Light Pulse Animation */
   .animated-gradient::before {
     content: '';
     position: absolute;

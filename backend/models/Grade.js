@@ -6,6 +6,8 @@ const gradeSchemaZod = z.object({
     sessionId: z.string().nonempty(),
     activityId: z.string().nonempty(),
     studentId: z.string().nonempty(),
+    studentName: z.string().nonempty(),
+    email: z.string().email(),
     codeSubmission: z.string().nonempty(),
     aiEvaluation: z.object({
         score: z.number().min(0).max(100),
@@ -15,50 +17,28 @@ const gradeSchemaZod = z.object({
         score: z.number().min(0).max(100),
         feedback: z.string().optional()
     }).optional(),
-    instructorEvaluatedAt: z.date().optional()
+    instructorEvaluatedAt: z.date().optional(),
+    uploadedAt: z.date()
 });
 
 // Define the Mongoose schema
 const gradeSchema = new mongoose.Schema({
-    sessionId: {
-        type: String,
-        required: true
-    },
-    activityId: {
-        type: String,
-        required: true
-    },
-    studentId: {
-        type: String,
-        required: true
-    },
-    codeSubmission: {
-        type: String,
-        required: true
-    },
+    sessionId: { type: String, required: true },
+    activityId: { type: String, required: true },
+    studentId: { type: String, required: true },
+    studentName: { type: String, required: true },
+    email: { type: String, required: true },
+    codeSubmission: { type: String, required: true },
     aiEvaluation: {
-        score: {
-            type: Number,
-            min: 0,
-            max: 100,
-        },
-        feedback: {
-            type: String
-        }
+        score: { type: Number, min: 0, max: 100 },
+        feedback: { type: String }
     },
     instructorEvaluation: {
-        score: {
-            type: Number,
-            min: 0,
-            max: 100,
-        },
-        feedback: {
-            type: String
-        }
+        score: { type: Number, min: 0, max: 100 },
+        feedback: { type: String }
     },
-    instructorEvaluatedAt: {
-        type: Date
-    }
+    instructorEvaluatedAt: { type: Date },
+    uploadedAt: { type: Date, required: true }
 });
 
 const grade = mongoose.model('Grade', gradeSchema);

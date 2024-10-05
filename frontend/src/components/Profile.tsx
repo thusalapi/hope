@@ -5,6 +5,12 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { z } from "zod";
 import { toFormikValidationSchema } from "zod-formik-adapter";
 import Sidebar from "@/components/Sidebar";
+import { motion } from "framer-motion";
+import CalendarComponent from "@/components/CalendarComponent";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+
+const CLIENT_ID =
+  "808387821131-rdi2ou03d62t97g22kcqsr8k1g8kj6fr.apps.googleusercontent.com";
 
 const Profile: React.FC = () => {
   const [user, setUser] = useState<User | null>(null);
@@ -35,6 +41,7 @@ const Profile: React.FC = () => {
     email: string;
     batch: string;
     subGroup: string;
+    profilePicture: string;
   }) => {
     console.log("Form Values:", values);
     try {
@@ -46,13 +53,20 @@ const Profile: React.FC = () => {
     }
   };
 
+  const validationSchema = z.object({
+    name: z.string().nonempty("Required"),
+    email: z.string().email("Invalid email address").nonempty("Required"),
+    batch: z.string().nonempty("Required"),
+    subGroup: z.string().nonempty("Required"),
+    profilePicture: z.string().url("Invalid URL").nonempty("Required"),
+  });
+
   if (loading)
     return (
       <div className="flex justify-center items-center h-screen">
         Loading...
       </div>
     );
-
   if (!user)
     return (
       <div className="flex justify-center items-center h-screen">
@@ -60,156 +74,133 @@ const Profile: React.FC = () => {
       </div>
     );
 
-  const validationSchema = z.object({
-    name: z.string().nonempty("Required"),
-    email: z.string().email("Invalid email address").nonempty("Required"),
-    batch: z.string().nonempty("Required"),
-    subGroup: z.string().nonempty("Required"),
-  });
-
   return (
     <div className="flex min-h-screen bg-gray-100">
       <Sidebar />
-      <div className="flex-1 py-6 flex flex-col justify-center sm:py-12">
-        <div className="relative py-3 sm:max-w-xl sm:mx-auto">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-blue-600 shadow-lg transform -skew-y-6 sm:skew-y-0 sm:-rotate-6 sm:rounded-3xl"></div>
-          <div className="relative px-4 py-10 bg-white shadow-lg sm:rounded-3xl sm:p-20">
-            <div className="max-w-md mx-auto">
-              <div className="divide-y divide-gray-200">
-                <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
-                  <h2 className="text-3xl font-extrabold text-gray-900">
-                    Profile
-                  </h2>
-                  {editing ? (
-                    <Formik
-                      initialValues={{
-                        userID: user.userID,
-                        name: user.name,
-                        email: user.email,
-                        batch: user.batch || "",
-                        subGroup: user.subGroup || "",
-                      }}
-                      validationSchema={toFormikValidationSchema(
-                        validationSchema
-                      )}
-                      onSubmit={async (values) => {
-                        console.log("Form Values Submitted:", values);
-
-                        try {
-                          await handleSave(values);
-                        } catch (error) {
-                          console.error("Error updating profile:", error);
-                        }
-                      }}
-                    >
-                      <Form>
-                        <div className="mt-6">
-                          <label
-                            className="block text-gray-700 text-sm font-semibold mb-2"
-                            htmlFor="name"
-                          >
-                            Name
-                          </label>
-                          <Field
-                            type="text"
-                            id="name"
-                            name="name"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          />
-                          <ErrorMessage
-                            name="name"
-                            component="div"
-                            className="text-red-500 text-xs mt-1"
-                          />
-                        </div>
-                        <div className="mt-4">
-                          <label
-                            className="block text-gray-700 text-sm font-semibold mb-2"
-                            htmlFor="email"
-                          >
-                            Email
-                          </label>
-                          <Field
-                            type="email"
-                            id="email"
-                            name="email"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          />
-                          <ErrorMessage
-                            name="email"
-                            component="div"
-                            className="text-red-500 text-xs mt-1"
-                          />
-                        </div>
-                        <div className="mt-4">
-                          <label
-                            className="block text-gray-700 text-sm font-semibold mb-2"
-                            htmlFor="batch"
-                          >
-                            Batch
-                          </label>
-                          <Field
-                            type="text"
-                            id="batch"
-                            name="batch"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          />
-                          <ErrorMessage
-                            name="batch"
-                            component="div"
-                            className="text-red-500 text-xs mt-1"
-                          />
-                        </div>
-                        <div className="mt-4">
-                          <label
-                            className="block text-gray-700 text-sm font-semibold mb-2"
-                            htmlFor="subGroup"
-                          >
-                            Sub Group
-                          </label>
-                          <Field
-                            type="text"
-                            id="subGroup"
-                            name="subGroup"
-                            className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                          />
-                          <ErrorMessage
-                            name="subGroup"
-                            component="div"
-                            className="text-red-500 text-xs mt-1"
-                          />
-                        </div>
-                        <div className="pt-6">
-                          <button
-                            type="submit"
-                            className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </Form>
-                    </Formik>
-                  ) : (
-                    <div>
-                      <p className="mt-6 text-xl">Name: {user.name}</p>
-                      <p className="mt-2 text-xl">Email: {user.email}</p>
-                      <p className="mt-2 text-xl">Batch: {user.batch}</p>
-                      <p className="mt-2 text-xl">Sub Group: {user.subGroup}</p>
-                      <div className="pt-6">
-                        <button
-                          onClick={handleEdit}
-                          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                        >
-                          Edit
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
+      <div className="flex-1 p-8">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden"
+        >
+          <div className="md:flex">
+            <div className="md:flex-shrink-0">
+              <img
+                className="h-48 w-full object-cover md:w-48"
+                src={user.profilePicture}
+                alt="Profile"
+              />
+            </div>
+            <div className="p-8">
+              <h1 className="mt-2 text-3xl font-bold text-gray-900">
+                Name: {user.name}
+              </h1>
+              <p className="mt-2 text-gray-600 ml-1">Email: {user.email}</p>
+              <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold mt-2 ml-1">
+                Group: {user.batch} . {user.subGroup}
               </div>
+
+              {editing ? (
+                <Formik
+                  initialValues={{
+                    userID: user.userID,
+                    name: user.name,
+                    email: user.email,
+                    batch: user.batch || "",
+                    subGroup: user.subGroup || "",
+                    profilePicture: user.profilePicture || "",
+                  }}
+                  validationSchema={toFormikValidationSchema(validationSchema)}
+                  onSubmit={handleSave}
+                >
+                  <Form className="mt-6 space-y-4">
+                    <div>
+                      <Field
+                        name="name"
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Name"
+                      />
+                      <ErrorMessage
+                        name="name"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Field
+                        name="email"
+                        type="email"
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Email"
+                      />
+                      <ErrorMessage
+                        name="email"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Field
+                        name="batch"
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Batch"
+                      />
+                      <ErrorMessage
+                        name="batch"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Field
+                        name="subGroup"
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Sub Group"
+                      />
+                      <ErrorMessage
+                        name="subGroup"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+                    <div>
+                      <Field
+                        name="profilePicture"
+                        className="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-indigo-500"
+                        placeholder="Profile Picture URL"
+                      />
+                      <ErrorMessage
+                        name="profilePicture"
+                        component="div"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition duration-300"
+                    >
+                      Save Changes
+                    </button>
+                  </Form>
+                </Formik>
+              ) : (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleEdit}
+                  className="mt-6 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                >
+                  Edit Profile
+                </motion.button>
+              )}
             </div>
           </div>
-        </div>
+        </motion.div>
+
+        <GoogleOAuthProvider clientId={CLIENT_ID}>
+          <CalendarComponent />
+        </GoogleOAuthProvider>
       </div>
     </div>
   );

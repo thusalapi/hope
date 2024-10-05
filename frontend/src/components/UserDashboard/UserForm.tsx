@@ -1,6 +1,7 @@
 import React from "react";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -11,7 +12,7 @@ interface User {
   _id?: string;
   name: string;
   email: string;
-  role: string;
+  role: "Student" | "Instructor";
   batch?: string;
   subGroup?: string;
 }
@@ -21,13 +22,28 @@ interface UserFormProps {
   onFormSubmit: () => void;
 }
 
-const validationSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
-  email: Yup.string().email("Invalid email").required("Email is required"),
-  role: Yup.string().required("Role is required"),
-  batch: Yup.string(),
-  subGroup: Yup.string(),
-});
+const userSchema = z
+  .object({
+    name: z.string().min(1, "Name is required"),
+    email: z.string().email("Invalid email"),
+    role: z.enum(["Student", "Instructor"]),
+    batch: z.string(),
+    subGroup: z.string(),
+  })
+  .refine(
+    (data) => {
+      if (data.role === "Instructor") {
+        return data.batch === "-" && data.subGroup === "-";
+      }
+      return data.batch !== "" && data.subGroup !== "";
+    },
+    {
+      message: "Batch and Sub Group are required for Students.",
+      path: ["role"],
+    }
+  );
+
+type UserFormData = z.infer<typeof userSchema>;
 
 const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
   const queryClient = useQueryClient();
@@ -49,98 +65,89 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
     },
   });
 
-  const initialValues: User = {
-    name: user?.name || "",
-    email: user?.email || "",
-    role: user?.role || "Student",
-    batch: user?.batch || "",
-    subGroup: user?.subGroup || "",
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setValue,
+  } = useForm<UserFormData>({
+    resolver: zodResolver(userSchema),
+    defaultValues: {
+      name: user?.name || "",
+      email: user?.email || "",
+      role: user?.role || "Student",
+      batch: user?.batch || "",
+      subGroup: user?.subGroup || "",
+    },
+  });
 
-  const handleSubmit = async (values: User, { setSubmitting }: any) => {
+  const role = watch("role");
+
+  React.useEffect(() => {
+    if (role === "Instructor") {
+      setValue("batch", "-");
+      setValue("subGroup", "-");
+    } else {
+      setValue("batch", "");
+      setValue("subGroup", "");
+    }
+  }, [role, setValue]);
+
+  const onSubmit = async (data: UserFormData) => {
     try {
       if (user?._id) {
-        await updateMutation.mutateAsync({ id: user._id, data: values });
+        await updateMutation.mutateAsync({ id: user._id, data });
       } else {
-        await createMutation.mutateAsync(values);
+        await createMutation.mutateAsync(data);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-    } finally {
-      setSubmitting(false);
     }
   };
 
   return (
-    <Formik
-      initialValues={initialValues}
-      validationSchema={validationSchema}
-      onSubmit={handleSubmit}
-    >
-      {({ isSubmitting }) => (
-        <Form className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Name:</Label>
-            <Field name="name" as={Input} />
-            <ErrorMessage
-              name="name"
-              component="div"
-              className="text-red-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Email:</Label>
-            <Field name="email" type="email" as={Input} />
-            <ErrorMessage
-              name="email"
-              component="div"
-              className="text-red-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="role">Role:</Label>
-            <Field
-              name="role"
-              as="select"
-              className="border border-gray-300 rounded p-2 w-full"
-            >
-              <option value="Student">Student</option>
-              <option value="Instructor">Instructor</option>
-            </Field>
-            <ErrorMessage
-              name="role"
-              component="div"
-              className="text-red-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="batch">Batch:</Label>
-            <Field name="batch" as={Input} />
-            <ErrorMessage
-              name="batch"
-              component="div"
-              className="text-red-500"
-            />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="subGroup">Sub Group:</Label>
-            <Field name="subGroup" as={Input} />
-            <ErrorMessage
-              name="subGroup"
-              component="div"
-              className="text-red-500"
-            />
-          </div>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-500 hover:bg-blue-600 text-white"
-          >
-            {user ? "Update User" : "Create User"}
-          </Button>
-        </Form>
-      )}
-    </Formik>
+    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      <div className="space-y-2">
+        <Label htmlFor="name">Name:</Label>
+        <Input {...register("name")} />
+        {errors.name && <p className="text-red-500">{errors.name.message}</p>}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="email">Email:</Label>
+        <Input {...register("email")} type="email" />
+        {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="role">Role:</Label>
+        <select
+          {...register("role")}
+          className="border border-gray-300 rounded p-2 w-full"
+        >
+          <option value="Student">Student</option>
+          <option value="Instructor">Instructor</option>
+        </select>
+        {errors.role && <p className="text-red-500">{errors.role.message}</p>}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="batch">Batch:</Label>
+        <Input {...register("batch")} disabled={role === "Instructor"} />
+        {errors.batch && <p className="text-red-500">{errors.batch.message}</p>}
+      </div>
+      <div className="space-y-2">
+        <Label htmlFor="subGroup">Sub Group:</Label>
+        <Input {...register("subGroup")} disabled={role === "Instructor"} />
+        {errors.subGroup && (
+          <p className="text-red-500">{errors.subGroup.message}</p>
+        )}
+      </div>
+      <Button
+        type="submit"
+        className="bg-blue-500 hover:bg-blue-600 text-white"
+      >
+        {user ? "Update User" : "Create User"}
+      </Button>
+    </form>
   );
 };
 

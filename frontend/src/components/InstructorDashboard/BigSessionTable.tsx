@@ -5,6 +5,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import ReportGeneratorButton from "./ReportGeneratorButton";
 
 interface Session {
   _id: string;
@@ -21,13 +22,13 @@ const BigSessionTable: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [editingSessionId, setEditingSessionId] = useState<string | null>(null); // State for tracking which session is being edited
+  const [editingSessionId, setEditingSessionId] = useState<string | null>(null);
   const [editingSessionData, setEditingSessionData] = useState<Session | null>(
     null
-  ); // State for editing form data
+  );
   const navigate = useNavigate();
 
-  const rowsPerPage = 5;
+  const rowsPerPage = 4;
   const [currentPage, setCurrentPage] = useState<number>(1);
 
   useEffect(() => {
@@ -167,6 +168,7 @@ const BigSessionTable: React.FC = () => {
         >
           Create a new Lab Session
         </button>
+        <ReportGeneratorButton />
         <h1 className="prose prose-2xl font-bold mb-2">Lab Sessions</h1>
         <div className="flex justify-between mb-4 space-x-4">
           <DatePicker

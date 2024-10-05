@@ -46,7 +46,7 @@ const Profile: React.FC = () => {
       <div className="relative z-40">
         <TopBar />
       </div>
-      <div className="flex-1 p-8 mt-16">
+      <div className="flex-1 p-8 mt-16 ml-56">
         <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="p-8">
             <div className="flex items-center space-x-8 mb-8">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import VsCodeOpenButton from "../Extension/VsCodeOpenButton";
 
 interface LabSheet {
   question: string;
@@ -75,7 +76,7 @@ const Session: React.FC = () => {
         </div>
         <div>
           <img
-            src="../../../src/assets/illustration1.png" // Replace with your illustration URL
+            src="../../../src/assets/illustration1.png"
             alt="Session Illustration"
             className="h-64 w-64 ml-32"
           />
@@ -89,7 +90,7 @@ const Session: React.FC = () => {
             {session.labSheet.map((question, index) => (
               <li className="mb-2" key={index}>
                 {question.question}
-              </li> // Display labSheet questions
+              </li>
             ))}
           </ol>
         ) : (
@@ -98,7 +99,7 @@ const Session: React.FC = () => {
       </div>
 
       <div className="mt-4">
-        <a
+        {/* <a
           href={`vscode://file/${projectPath}?sessionId=${localStorage.getItem(
             "sessionId"
           )}&authToken=${localStorage.getItem("authToken")}`}
@@ -111,7 +112,8 @@ const Session: React.FC = () => {
           className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700 ml-4"
         >
           Set Project Path
-        </button>
+        </button> */}
+        <VsCodeOpenButton />
       </div>
     </div>
   );

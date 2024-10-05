@@ -1,81 +1,138 @@
-import React from 'react';
+import React from "react";
 
 interface Evaluation {
-    sessionId: string;
-    activityId: string;
-    studentId: string;
-    studentName: string;
-    email: string;
-    codeSubmission: string;
-    aiEvaluation?: {
-        score: number;
-        feedback: string;
-    };
-    instructorEvaluation?: {
-        score: number;
-        feedback: string;
-    };
-    uploadedAt: string;
+  sessionId: string;
+  activityId: string;
+  studentId: string;
+  studentName: string;
+  email: string;
+  codeSubmission: string;
+  aiEvaluation?: {
+    score: number;
+    feedback: string;
+  };
+  instructorEvaluation?: {
+    score: number;
+    feedback: string;
+  };
+  uploadedAt: string;
 }
 
 const StudentTable: React.FC<{ evaluations: Evaluation[] }> = ({ evaluations }) => {
-    if (!evaluations || evaluations.length === 0) {
-        return <div>No evaluation data available</div>;
-    }
+  if (!evaluations || evaluations.length === 0) {
+    return <div>No evaluation data available</div>;
+  }
 
-    return (
-        <div className="mb-6 bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-bold mb-4">Evaluations</h2>
-            <table className="min-w-full">
-                <thead>
-                    <tr className="border-b">
-                        <th className="text-left p-4">Student Name</th>
-                        <th className="text-left p-4">Email</th>
-                        <th className="text-left p-4">Uploaded At</th>
-                        <th className="text-left p-4">Session ID</th>
-                        <th className="text-left p-4">Activity ID</th>
-                        <th className="text-left p-4">Student ID</th>
-                        <th className="text-left p-4">Code Submission</th>
-                        <th className="text-left p-4">AI Evaluation</th>
-                        <th className="text-left p-4">Instructor Evaluation</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {evaluations.map((evaluation, index) => (
-                        <tr key={index} className="border-b">
-                            <td className="p-4">{evaluation.studentName}</td>
-                            <td className="p-4">{evaluation.email}</td>
-                            <td className="p-4">{new Date(evaluation.uploadedAt).toLocaleString()}</td>
-                            <td className="p-4">{evaluation.sessionId}</td>
-                            <td className="p-4">{evaluation.activityId}</td>
-                            <td className="p-4">{evaluation.studentId}</td>
-                            <td className="p-4">{evaluation.codeSubmission}</td>
-                            <td className="p-4">
-                                {evaluation.aiEvaluation ? (
-                                    <>
-                                        <div>Score: {evaluation.aiEvaluation.score}</div>
-                                        <div>Feedback: {evaluation.aiEvaluation.feedback}</div>
-                                    </>
-                                ) : (
-                                    'N/A'
-                                )}
-                            </td>
-                            <td className="p-4">
-                                {evaluation.instructorEvaluation ? (
-                                    <>
-                                        <div>Score: {evaluation.instructorEvaluation.score}</div>
-                                        <div>Feedback: {evaluation.instructorEvaluation.feedback}</div>
-                                    </>
-                                ) : (
-                                    'N/A'
-                                )}
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+  const [filter, setFilter] = React.useState("");
+  const [scoreFilter, setScoreFilter] = React.useState<"weak" | "average" | "good" | null>(null);
+
+  const filteredEvaluations = evaluations.filter(evaluation => {
+    const matchesName = evaluation.studentName.toLowerCase().includes(filter.toLowerCase());
+    const matchesScore = scoreFilter === null ||
+      (scoreFilter === "weak" && (evaluation.aiEvaluation?.score || 0) < 50) ||
+      (scoreFilter === "average" && (evaluation.aiEvaluation?.score || 0) >= 50 && (evaluation.aiEvaluation?.score || 0) < 70) ||
+      (scoreFilter === "good" && (evaluation.aiEvaluation?.score || 0) >= 70);
+
+    return matchesName && matchesScore;
+  });
+
+  const handleGenerateReport = () => {
+    console.log("Generating report...");
+  };
+
+  return (
+    <div className="container mx-auto p-4">
+      <div className="flex justify-between items-center mb-4 bg-[#2148C0] text-white border border-gray-200 rounded-lg p-4">
+        <input
+          type="text"
+          placeholder="Filter by Student Name/IT Number"
+          value={filter}
+          onChange={(e) => setFilter(e.target.value)}
+          className="p-2 border rounded w-1/3 text-black"
+        />
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setScoreFilter("weak")}
+            className={`px-4 py-2 rounded ${scoreFilter === "weak" ? "bg-[#E67E22]" : "bg-[#E67E22] hover:bg-opacity-80"}`}
+          >
+            Weak
+          </button>
+          <button
+            onClick={() => setScoreFilter("average")}
+            className={`px-4 py-2 rounded ${scoreFilter === "average" ? "bg-[#F1C40F]" : "bg-[#F1C40F] hover:bg-opacity-80"}`}
+          >
+            Average
+          </button>
+          <button
+            onClick={() => setScoreFilter("good")}
+            className={`px-4 py-2 rounded ${scoreFilter === "good" ? "bg-[#2ECC71]" : "bg-[#2ECC71] hover:bg-opacity-80"}`}
+          >
+            Good
+          </button>
+          <button
+            onClick={() => setScoreFilter(null)}
+            className="px-4 py-2 bg-gray-300 text-gray-800 rounded hover:bg-gray-400"
+          >
+            Reset
+          </button>
         </div>
-    );
+        <button
+          onClick={handleGenerateReport}
+          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+        >
+          Generate Report
+        </button>
+      </div>
+
+      <div className="bg-white border border-gray-200 rounded-lg p-4 mt-0">
+        <h2 className="text-xl font-bold mb-6">Submitted Assignments</h2>
+        {filteredEvaluations.length > 0 ? (
+          <table className="min-w-full border-collapse">
+            <thead>
+              <tr>
+                <th className="border-b py-2 text-left">Student ID</th>
+                <th className="border-b py-2 text-left">Student Name</th>
+                <th className="border-b py-2 text-left">Email</th>
+                <th className="border-b py-2 text-left">Session ID</th>
+                <th className="border-b py-2 text-left">Activity ID</th>
+                <th className="border-b py-2 text-left">Uploaded On</th>
+                <th className="border-b py-2 text-left text-center">AI Evaluation</th>
+                <th className="border-b py-2 text-left text-center">Instructor Evaluation</th>
+                <th className="border-b py-2 text-left">Review Submission</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredEvaluations.map((evaluation) => (
+                <tr key={evaluation.studentId} className="hover:bg-gray-100">
+                  <td className="border-b py-2">{evaluation.studentId}</td>
+                  <td className="border-b py-2">{evaluation.studentName}</td>
+                  <td className="border-b py-2">{evaluation.email}</td>
+                  <td className="border-b py-2">{evaluation.sessionId}</td>
+                  <td className="border-b py-2">{evaluation.activityId}</td>
+                  <td className="border-b py-2">
+                    {new Date(evaluation.uploadedAt).toLocaleString('en-US', { month: 'short', day: 'numeric' }).replace(' ', '-').toUpperCase()}
+                  </td>
+                  <td className="border-b py-2 text-center">
+                    {evaluation.aiEvaluation ? evaluation.aiEvaluation.feedback : "N/A"}
+                  </td>
+                  <td className="border-b py-2 text-center">
+                    {evaluation.instructorEvaluation ? evaluation.instructorEvaluation.feedback : "N/A"}
+                  </td>
+                  <td className="border-b py-2">
+                    <button className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                      Review
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <p>No evaluations found.</p>
+        )}
+      </div>
+    </div>
+  );
 };
 
 export default StudentTable;

@@ -10,26 +10,19 @@ import TopBar from "@/components/TopBar";
 const InstructorDashboard: React.FC = () => {
   return (
     <div className="flex">
-      {/* Sidebar */}
       <div className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white z-50">
         <Sidebar />
       </div>
 
-      {/* Main content area */}
       <div className="flex-1 ml-64">
         <div className="relative z-40">
           <TopBar />
         </div>
-
-        {/* Page content with padding to adjust for the navbar height */}
         <div className="container mx-auto mt-16 p-4 flex">
-          {/* Left section */}
           <div className="w-2/3">
             <NextSession />
             <SmallSessionTable />
           </div>
-
-          {/* Right section */}
           <div className="w-1/3">
             <InstructorProfile />
             <Calendar />

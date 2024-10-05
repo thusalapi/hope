@@ -17,16 +17,27 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material";
+
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { styled } from "@mui/system";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import AddIcon from "@mui/icons-material/Add";
 import DescriptionIcon from "@mui/icons-material/Description";
+import UserForm from "./UserForm";
+import ReportButton from "./ReportButton";
 
 interface User {
   _id?: string;
   name: string;
   email: string;
-  role: string;
+  role: "Student" | "Instructor";
   batch?: string;
   subGroup?: string;
 }
@@ -45,6 +56,8 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
   const [roleFilter, setRoleFilter] = useState<"Student" | "Instructor" | null>(
     null
   );
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<User | undefined>(undefined);
 
   const {
     data: users = [],
@@ -68,8 +81,19 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
     return matchesName && matchesRole;
   });
 
-  const handleGenerateReport = () => {
-    console.log("Generating user report...");
+  const handleEditUser = (user: User) => {
+    setSelectedUser(user);
+    setIsFormOpen(true);
+  };
+
+  const handleFormSubmit = () => {
+    setSelectedUser(undefined);
+    setIsFormOpen(false);
+  };
+
+  const handleDialogClose = () => {
+    setSelectedUser(undefined);
+    setIsFormOpen(false);
   };
 
   if (isLoading) return <CircularProgress />;
@@ -115,9 +139,10 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
             clickable
           />
         </div>
-        <Tooltip title="Generate Report">
-          <IconButton onClick={handleGenerateReport} color="primary">
-            <DescriptionIcon />
+        <ReportButton />
+        <Tooltip title="Add New User">
+          <IconButton onClick={() => setIsFormOpen(true)} color="primary">
+            <AddIcon />
           </IconButton>
         </Tooltip>
       </div>
@@ -182,6 +207,25 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
           </TableBody>
         </Table>
       </TableContainer>
+
+      {/* User Form Dialog */}
+      <Dialog
+        open={isFormOpen}
+        onOpenChange={(open) => {
+          if (!open) handleDialogClose();
+          setIsFormOpen(open);
+        }}
+      >
+        {/* <DialogTrigger asChild></DialogTrigger> */}
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>
+              {selectedUser ? "Edit User" : "Create User"}
+            </DialogTitle>
+          </DialogHeader>
+          <UserForm user={selectedUser} onFormSubmit={handleFormSubmit} />
+        </DialogContent>
+      </Dialog>
     </Paper>
   );
 };

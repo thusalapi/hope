@@ -4,6 +4,8 @@ import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 import { generateReport } from "../../services/reportApi";
 import { Button } from "@/components/ui/button";
+import { IconButton, Tooltip } from "@mui/material";
+import DescriptionIcon from "@mui/icons-material/Description";
 
 const ReportButton: React.FC = () => {
   const mutation = useMutation({
@@ -92,7 +94,13 @@ const ReportButton: React.FC = () => {
     },
   });
 
-  return <Button onClick={() => mutation.mutate()}>Download Report</Button>;
+  return (
+    <Tooltip title="Generate Report">
+      <IconButton onClick={() => mutation.mutate()}>
+        <DescriptionIcon />
+      </IconButton>
+    </Tooltip>
+  );
 };
 
 export default ReportButton;

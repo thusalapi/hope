@@ -5,4 +5,5 @@ export interface User {
   batch: string;
   subGroup: string;
   role: string;
+  profilePicture: string;
 }

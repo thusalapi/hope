@@ -16,7 +16,7 @@ interface User {
   _id?: string;
   name: string;
   email: string;
-  role: string;
+  role: "Student" | "Instructor";
   batch?: string;
   subGroup?: string;
 }

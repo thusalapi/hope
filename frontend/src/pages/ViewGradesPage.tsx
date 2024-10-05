@@ -283,172 +283,177 @@ const ViewGradesPage: React.FC = () => {
   };
 
   return (
-<div className="flex">
-  <div className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white">
-    <Sidebar />
-  </div>
 
-  <div className="flex-1 ml-64 p-4"> {/* This takes the remaining width with padding */}
-    <div className="w-full mt-10 bg-white shadow-lg rounded-lg p-4">
-      <h2 className="text-3xl font-bold mb-6">View Grades</h2>
+  <div className="flex bg-white">
+    <div className="fixed top-0 left-0 h-full w-64 bg-gray-800 text-white">
+      <Sidebar />
+    </div>
 
-      <div className="mb-4 p-4 bg-gray-100 rounded-lg shadow-md flex flex-wrap">
-        <div className="relative mr-4">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
-            onClick={() => setShowGroupOptions((prev) => !prev)}
-          >
-            Groups
-          </button>
-          {showGroupOptions && (
-            <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
-              {groups.map((group) => (
-                <label key={group} className="block p-2 hover:bg-gray-200">
-                  <input
-                    type="checkbox"
-                    checked={selectedGroup.includes(group)}
-                    onChange={() => handleFilterChange(setSelectedGroup, group)}
-                  />
-                  {group}
-                </label>
-              ))}
-            </div>
-          )}
+    <div className="flex-1 ml-64 pl-4 p-2">
+      <div className="w-full mt-2 bg-white rounded-lg p-4">
+        <h2 className="text-3xl font-bold mb-6">View Grades</h2>
+
+        {/* Filters Section */}
+        <div className="mb-4 p-4 bg-gray-100 rounded-lg flex flex-wrap sticky top-0 z-10">
+          <div className="relative mr-4">
+            <button
+              className="px-4 py-2 bg-[#2148C0] text-white rounded-lg hover:bg-[#1A3A9B] transition duration-200" // Changed color
+              onClick={() => setShowGroupOptions((prev) => !prev)}
+            >
+              Groups
+            </button>
+            {showGroupOptions && (
+              <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
+                {groups.map((group) => (
+                  <label key={group} className="block p-2 hover:bg-gray-200">
+                    <input
+                      type="checkbox"
+                      checked={selectedGroup.includes(group)}
+                      onChange={() => handleFilterChange(setSelectedGroup, group)}
+                    />
+                    {group}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="relative mr-4">
+            <button
+              className="px-4 py-2 bg-[#2148C0] text-white rounded-lg hover:bg-[#1A3A9B] transition duration-200"
+              onClick={() => setShowModuleOptions((prev) => !prev)}
+            >
+              Modules
+            </button>
+            {showModuleOptions && (
+              <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
+                {modules.map((module) => (
+                  <label key={module} className="block p-2 hover:bg-gray-200">
+                    <input
+                      type="checkbox"
+                      checked={selectedModule.includes(module)}
+                      onChange={() => handleFilterChange(setSelectedModule, module)}
+                    />
+                    {module}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="relative mr-4">
+            <button
+              className="px-4 py-2 bg-[#2148C0] text-white rounded-lg hover:bg-[#1A3A9B] transition duration-200"
+              onClick={() => setShowTitleOptions((prev) => !prev)}
+            >
+              Lab Sheets
+            </button>
+            {showTitleOptions && (
+              <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
+                {titles.map((title) => (
+                  <label key={title} className="block p-2 hover:bg-gray-200">
+                    <input
+                      type="checkbox"
+                      checked={selectedTitle.includes(title)}
+                      onChange={() => handleFilterChange(setSelectedTitle, title)}
+                    />
+                    {title}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="relative mr-4">
+            <button
+              className="px-4 py-2 bg-[#2148C0] text-white rounded-lg hover:bg-[#1A3A9B] transition duration-200"
+              onClick={() => setShowInstructorOptions((prev) => !prev)}
+            >
+              Instructors
+            </button>
+            {showInstructorOptions && (
+              <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
+                {instructors.map((instructor) => (
+                  <label key={instructor} className="block p-2 hover:bg-gray-200">
+                    <input
+                      type="checkbox"
+                      checked={selectedInstructor.includes(instructor)}
+                      onChange={() => handleFilterChange(setSelectedInstructor, instructor)}
+                    />
+                    {instructor}
+                  </label>
+                ))}
+              </div>
+            )}
+          </div>
+
+          <div className="mr-4">
+            <h4 className="inline-block mr-2">Date</h4>
+            <DatePicker
+              selected={selectedDate}
+              onChange={(date) => setSelectedDate(date)}
+              dateFormat="yyyy-MM-dd"
+              className="border p-2 rounded"
+              placeholderText="Select a date"
+            />
+          </div>
         </div>
 
-        <div className="relative mr-4">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
-            onClick={() => setShowModuleOptions((prev) => !prev)}
-          >
-            Modules
-          </button>
-          {showModuleOptions && (
-            <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
-              {modules.map((module) => (
-                <label key={module} className="block p-2 hover:bg-gray-200">
-                  <input
-                    type="checkbox"
-                    checked={selectedModule.includes(module)}
-                    onChange={() => handleFilterChange(setSelectedModule, module)}
-                  />
-                  {module}
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="relative mr-4">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
-            onClick={() => setShowTitleOptions((prev) => !prev)}
-          >
-            Lab Sheets
-          </button>
-          {showTitleOptions && (
-            <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
-              {titles.map((title) => (
-                <label key={title} className="block p-2 hover:bg-gray-200">
-                  <input
-                    type="checkbox"
-                    checked={selectedTitle.includes(title)}
-                    onChange={() => handleFilterChange(setSelectedTitle, title)}
-                  />
-                  {title}
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="relative mr-4">
-          <button
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-200"
-            onClick={() => setShowInstructorOptions((prev) => !prev)}
-          >
-            Instructors
-          </button>
-          {showInstructorOptions && (
-            <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-md z-10">
-              {instructors.map((instructor) => (
-                <label key={instructor} className="block p-2 hover:bg-gray-200">
-                  <input
-                    type="checkbox"
-                    checked={selectedInstructor.includes(instructor)}
-                    onChange={() => handleFilterChange(setSelectedInstructor, instructor)}
-                  />
-                  {instructor}
-                </label>
-              ))}
-            </div>
-          )}
-        </div>
-
-        <div className="mr-4">
-          <h4 className="inline-block mr-2">Date</h4>
-          <DatePicker
-            selected={selectedDate}
-            onChange={(date) => setSelectedDate(date)}
-            dateFormat="yyyy-MM-dd"
-            className="border p-2 rounded"
-            placeholderText="Select a date"
-          />
-        </div>
-      </div>
-
-      <div
-        style={{
-          maxHeight: "750px",
-          overflowY: "auto",
-          border: "1px solid #e2e8f0",
-        }}
+       <div
+          style={{
+            maxHeight: "750px",
+            overflowY: "auto",
+            border: "1px solid #e2e8f0",
+          }}
+        >
+<table className="w-full border-collapse">
+  <thead>
+    <tr className="bg-[#2148C0] text-white"> {/* Keep this for the row */}
+      <th className="border-b border-gray-300 p-2 rounded-tl-lg"> {/* Rounded left corner */}
+        Title
+      </th>
+      <th className="border-b border-gray-300 p-2">Module Code</th>
+      <th className="border-b border-gray-300 p-2">Date</th>
+      <th className="border-b border-gray-300 p-2">Time</th>
+      <th className="border-b border-gray-300 p-2">Group</th>
+      <th className="border-b border-gray-300 p-2">Instructor</th>
+      <th className="border-b border-gray-300 p-2">Location</th>
+      <th className="border-b border-gray-300 p-2 rounded-tr-lg"> {/* Rounded right corner */}
+        Action
+      </th>
+    </tr>
+  </thead>
+  <tbody>
+    {filteredLabSessions.map((session) => (
+      <tr
+        key={session.id}
+        className="hover:bg-gray-100 transition duration-200"
       >
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-blue-600 text-white">
-              <th className="border border-gray-300 p-2">Title</th>
-              <th className="border border-gray-300 p-2">Module Code</th>
-              <th className="border border-gray-300 p-2">Date</th>
-              <th className="border border-gray-300 p-2">Time</th>
-              <th className="border border-gray-300 p-2">Group</th>
-              <th className="border border-gray-300 p-2">Instructor</th>
-              <th className="border border-gray-300 p-2">Location</th>
-              <th className="border border-gray-300 p-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredLabSessions.map((session) => (
-              <tr
-                key={session.id}
-                className="hover:bg-gray-100 transition duration-200"
-              >
-                <td className="border border-gray-300 p-2">{session.title}</td>
-                <td className="border border-gray-300 p-2">{session.moduleCode}</td>
-                <td className="border border-gray-300 p-2">{session.date}</td>
-                <td className="border border-gray-300 p-2">{session.time}</td>
-                <td className="border border-gray-300 p-2">{session.group}</td>
-                <td className="border border-gray-300 p-2">{session.instructorName}</td>
-                <td className="border border-gray-300 p-2">{session.location}</td>
-                <td className="border border-gray-300 p-2">
-                  <button
-                    className="bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 transition duration-200"
-                    onClick={() => handleViewSubmission(session.id)}
-                  >
-                    View Submission
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+        <td className="p-2">{session.title}</td>
+        <td className="p-2">{session.moduleCode}</td>
+        <td className="p-2">{session.date}</td>
+        <td className="p-2">{session.time}</td>
+        <td className="p-2">{session.group}</td>
+        <td className="p-2">{session.instructorName}</td>
+        <td className="p-2">{session.location}</td>
+        <td className="p-2">
+          <button
+            className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+            onClick={() => handleViewSubmission(session.id)}
+          >
+            View Submission
+          </button>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-
-  );
-};
+);
+};  
 
 export default ViewGradesPage;

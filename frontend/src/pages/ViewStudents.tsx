@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import StudentTable from "./../components/Grading/StudentTable"; // Adjusted import for clarity
+import StudentTable from "./../components/Grading/StudentTable"; 
 import Sidebar from "../components/Sidebar";
 import GradesReport from "@/components/Grading/GradesReport";
 
@@ -29,12 +29,10 @@ const ViewStudents: React.FC = () => {
       </div>
 
       <div className="w-3/4 max-container mx-auto mt-20">
-        <div className="w-full mx-auto mt-10 p-8 ml-20">
+        <div className="w-full mx-auto mt-10 p-8 ml-20 bg-white rounded-lg shadow-lg">
           <h2 className="text-3xl font-bold mb-6">Student Submissions</h2>
           {studentData.length > 0 ? (
-            studentData.map((student, index) => (
-              <StudentTable key={index} evaluation={student} />
-            ))
+            <StudentTable evaluations={studentData} />
           ) : (
             <div>No evaluations available</div>
           )}

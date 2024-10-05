@@ -5,35 +5,20 @@ import axios from "axios";
 import companyLogo from "../../../src/assets/HOPE.png";
 
 function ReportGeneratorButton() {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-
-  const handleOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedOption(event.target.value);
-  };
-
-  const handleContinue = async () => {
-    if (!selectedOption) {
-      alert("Please select an option!");
-      return;
-    }
-
-    console.log("Selected option:", selectedOption);
+  const handleGenerateReport = async () => {
+    setIsGenerating(true);
 
     try {
-      const response = await axios.get(`http://localhost:5000/session`, {
-        params: { option: selectedOption },
-      });
-
+      const response = await axios.get(`http://localhost:5000/session`);
       console.log("API Response:", response.data);
       const sessionData = response.data;
 
       if (!sessionData || !Array.isArray(sessionData)) {
         console.error("Session data is not an array:", sessionData);
         alert("No session data available.");
+        setIsGenerating(false);
         return;
       }
 
@@ -41,9 +26,9 @@ function ReportGeneratorButton() {
     } catch (error) {
       console.error("Error fetching session data:", error);
       alert("Failed to fetch session data.");
+    } finally {
+      setIsGenerating(false);
     }
-
-    closeModal();
   };
 
   const generatePDF = (data: any[]) => {
@@ -52,7 +37,7 @@ function ReportGeneratorButton() {
       session.title,
       session.instructorId,
       session.groupIds.join(", "),
-      formatDate(session.createdAt),
+      formatDate(session.date),
       session.startTime,
       session.duration,
     ]);
@@ -63,7 +48,7 @@ function ReportGeneratorButton() {
     const maxWidth = 290;
 
     const textLines = doc.splitTextToSize(
-      `This report contains session data for the selected time period. It includes details such as session title, instructor ID, group IDs, date, start time, duration, quality check result, and any recorded issues.`,
+      `This report contains session data for all available sessions. It includes details such as session title, instructor ID, group IDs, date, start time, duration, quality check result, and any recorded issues.`,
       maxWidth
     );
     const textParagraph = textLines.join("\n");
@@ -118,7 +103,7 @@ function ReportGeneratorButton() {
         margin,
         doc.internal.pageSize.height - 10
       );
-    doc.save(`SessionReport_${selectedOption}.pdf`);
+    doc.save(`SessionReport.pdf`);
   };
 
   const formatDate = (dateString: string) => {
@@ -132,56 +117,14 @@ function ReportGeneratorButton() {
   return (
     <>
       <button
-        onClick={openModal}
-        className="btn btn-primary bg-blue-500 hover:bg-white-content text-white text-bold px-6 py-2 rounded-md mb-4 w-full"
+        onClick={handleGenerateReport}
+        className={`btn btn-primary bg-new-blue hover:bg-white-content text-white text-bold px-6 py-2 rounded-md mb-4 w-full ${
+          isGenerating ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+        disabled={isGenerating}
       >
-        Generate Reports
+        {isGenerating ? "Generating..." : "Generate Reports"}
       </button>
-
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50">
-          <div className="bg-white p-8 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Choose Time Period</h2>
-
-            <div className="mb-6">
-              <label className="block mb-2">
-                <input
-                  type="radio"
-                  value="7days"
-                  checked={selectedOption === "7days"}
-                  onChange={handleOptionChange}
-                  className="mr-2"
-                />
-                Past 7 days
-              </label>
-              <label className="block">
-                <input
-                  type="radio"
-                  value="1month"
-                  checked={selectedOption === "1month"}
-                  onChange={handleOptionChange}
-                  className="mr-2"
-                />
-                Past month
-              </label>
-            </div>
-
-            <button
-              onClick={handleContinue}
-              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full"
-            >
-              Continue
-            </button>
-
-            <button
-              onClick={closeModal}
-              className="mt-4 bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-full"
-            >
-              Close
-            </button>
-          </div>
-        </div>
-      )}
     </>
   );
 }

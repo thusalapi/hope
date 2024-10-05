@@ -18,7 +18,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="w-64 h-screen bg-primary-content shadow-md flex flex-col">
+    <div className="w-64 h-screen bg-primary-content shadow-md flex flex-col fixed">
       <div className="p-6 text-center">
         <h1 className="text-3xl font-bold text-new-blue">HOPE</h1>
       </div>

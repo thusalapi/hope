@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createUser, updateUser } from "../../services/userApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 
 interface User {
   _id?: string;
@@ -62,6 +63,19 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       onFormSubmit();
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "User created successfully",
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to create user. Please try again.",
+      });
+      console.error("Error creating user:", error);
     },
   });
 
@@ -71,6 +85,19 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       onFormSubmit();
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "User updated successfully",
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to update user. Please try again.",
+      });
+      console.error("Error updating user:", error);
     },
   });
 

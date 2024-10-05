@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getUsers, deleteUser } from "../../services/userApi";
 import {
-  Button,
   CircularProgress,
   Typography,
   TextField,
@@ -23,15 +22,14 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { styled } from "@mui/system";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import AddIcon from "@mui/icons-material/Add";
-import DescriptionIcon from "@mui/icons-material/Description";
 import UserForm from "./UserForm";
 import ReportButton from "./ReportButton";
+import Swal from "sweetalert2";
 
 interface User {
   _id?: string;
@@ -72,6 +70,19 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
     mutationFn: deleteUser,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "User deleted successfully",
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to delete user. Please try again.",
+      });
+      console.error("Error deleting user:", error);
     },
   });
 

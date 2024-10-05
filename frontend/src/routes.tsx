@@ -14,6 +14,7 @@ import ReviewSubmissionPage from "./pages/ReviewSubmissionPage";
 import UserManagement from "./pages/UserManagement";
 import InstructorSessionsPage from "./pages/InstructorSessionsPage";
 import InstructorSession from "./pages/InstructorSession";
+import LoginPage from "./pages/LoginPage";
 
 const router = createBrowserRouter([
   {
@@ -22,7 +23,7 @@ const router = createBrowserRouter([
   },
   {
     path: "/login",
-    element: <Login />,
+    element: <LoginPage />,
   },
   {
     path: "/profile",

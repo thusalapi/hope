@@ -184,7 +184,7 @@ const UserList: React.FC<UserListProps> = ({ onEdit }) => {
                   <TableCell align="right">
                     <Tooltip title="Edit">
                       <IconButton
-                        onClick={() => onEdit(user)}
+                        onClick={() => handleEditUser(user)}
                         color="primary"
                         size="small"
                       >

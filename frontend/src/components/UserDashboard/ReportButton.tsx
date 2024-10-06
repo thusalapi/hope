@@ -6,6 +6,7 @@ import { generateReport } from "../../services/reportApi";
 import { Button } from "@/components/ui/button";
 import { IconButton, Tooltip } from "@mui/material";
 import DescriptionIcon from "@mui/icons-material/Description";
+import companyLogo from "../../../src/assets/HOPE.png";
 
 const ReportButton: React.FC = () => {
   const mutation = useMutation({
@@ -13,10 +14,42 @@ const ReportButton: React.FC = () => {
     onSuccess: (data) => {
       const pdf = new jsPDF();
 
+      // Add logo
+      const margin = 14;
+      const logoWidth = 30;
+      const logoHeight = 20;
+      pdf.addImage(
+        companyLogo,
+        "PNG",
+        pdf.internal.pageSize.width - margin - logoWidth,
+        margin,
+        logoWidth,
+        logoHeight
+      );
+
+      // Add company details
+      pdf.setFontSize(10);
+      pdf.setFont("helvetica");
+      pdf.text("Hope", margin, margin + 10);
+      pdf.text("thusalapi@gmail.com", margin, margin + 20);
+      pdf.text(formatDate(new Date().toString()), margin, margin + 30);
+
       // Add title
       pdf.setFontSize(20);
-      pdf.setTextColor(0, 102, 204);
-      pdf.text("User Report", 105, 15, { align: "center" });
+      pdf.setTextColor(33, 72, 192); // #2148C0
+      pdf.setFont("helvetica", "bold");
+      pdf.text("Session Report", margin, 70);
+
+      // Add description
+      const maxWidth = 400;
+      const textLines = pdf.splitTextToSize(
+        `This report contains session data for all available sessions. It includes details such as session title, instructor ID, group IDs, date, start time, duration, quality check result, any recorded issues, and the total number of students and instructors in the system.`,
+        maxWidth
+      );
+      pdf.setFontSize(10);
+      pdf.setFont("helvetica", "normal");
+      pdf.setTextColor(0, 0, 0);
+      pdf.text(textLines, margin, 80, { maxWidth });
 
       // Add summary table
       autoTable(pdf, {
@@ -25,74 +58,60 @@ const ReportButton: React.FC = () => {
           ["Students", data.studentCount.toString()],
           ["Instructors", data.instructorCount.toString()],
         ],
-        startY: 25,
+        startY: 100,
         theme: "grid",
-        headStyles: { fillColor: [0, 122, 255], textColor: 255 },
+        headStyles: { fillColor: [31, 41, 55], textColor: 255 },
         alternateRowStyles: { fillColor: [240, 248, 255] },
       });
 
-      // Add pie chart
-      const total = data.studentCount + data.instructorCount;
-      const studentPercentage = (data.studentCount / total) * 100;
-      const instructorPercentage = (data.instructorCount / total) * 100;
+      // Add session data table
+      if (data.sessions && Array.isArray(data.sessions)) {
+        const tableRows = data.sessions.map((session: any) => [
+          session.title,
+          session.instructorId,
+          session.groupIds.join(", "),
+          formatDate(session.date),
+          session.startTime,
+          session.duration,
+        ]);
 
-      // pdf.setFontSize(16);
-      // pdf.setTextColor(0, 0, 0);
-      // pdf.text("User Distribution", 105, 70, { align: "center" });
-
-      // const centerX = 105;
-      // const centerY = 110;
-      // const radius = 40;
-
-      // // Function to draw a pie slice
-      // const drawPieSlice = (
-      //   startAngle: number,
-      //   endAngle: number,
-      //   color: number[]
-      // ) => {
-      //   const x1 = centerX + radius * Math.cos(startAngle);
-      //   const y1 = centerY + radius * Math.sin(startAngle);
-      //   const x2 = centerX + radius * Math.cos(endAngle);
-      //   const y2 = centerY + radius * Math.sin(endAngle);
-
-      //   pdf.setFillColor(color[0], color[1], color[2]);
-      //   pdf.lines(
-      //     [
-      //       [x1 - centerX, y1 - centerY],
-      //       [x2 - centerX, y2 - centerY],
-      //     ],
-      //     centerX,
-      //     centerY,
-      //     [1, 1],
-      //     "F"
-      //   );
-      // };
-
-      // // Draw pie chart
-      // const studentEndAngle = (studentPercentage / 100) * 2 * Math.PI;
-      // drawPieSlice(0, studentEndAngle, [0, 102, 204]);
-      // drawPieSlice(studentEndAngle, 2 * Math.PI, [255, 165, 0]);
-
-      // Legend
-      pdf.setFontSize(12);
-      pdf.setFillColor(0, 102, 204);
-      pdf.rect(70, 150, 10, 10, "F");
-      pdf.text(`Students (${studentPercentage.toFixed(1)}%)`, 85, 158);
-
-      pdf.setFillColor(255, 165, 0);
-      pdf.rect(70, 165, 10, 10, "F");
-      pdf.text(`Instructors (${instructorPercentage.toFixed(1)}%)`, 85, 173);
+        autoTable(pdf, {
+          head: [
+            [
+              "Title",
+              "Instructor ID",
+              "Group IDs",
+              "Date",
+              "Start Time",
+              "Duration",
+            ],
+          ],
+          body: tableRows,
+          startY: (pdf as any).autoTable.previous.finalY + 10,
+          headStyles: { fillColor: [31, 41, 55] },
+        });
+      }
 
       // Footer
       pdf.setFontSize(10);
-      pdf.setTextColor(128);
-      pdf.text("Generated on " + new Date().toLocaleString(), 105, 285, {
-        align: "center",
-      });
+      pdf.setTextColor(200, 200, 200);
+      pdf.text(
+        `Report generated by Session Management System`,
+        margin,
+        pdf.internal.pageSize.height - 10
+      );
 
-      pdf.save("user-report.pdf");
+      pdf.save("useranalysics.pdf");
     },
   });
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    const year = date.getFullYear();
+    let month = (1 + date.getMonth()).toString().padStart(2, "0");
+    let day = date.getDate().toString().padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
   return (
     <Tooltip title="Generate Report">

@@ -27,7 +27,13 @@ const BigSessionTable: React.FC = () => {
     null
   );
   const navigate = useNavigate();
-
+  const [errors, setErrors] = useState({
+    title: "",
+    date: "",
+    startTime: "",
+    duration: "",
+    description: "",
+  });
   const rowsPerPage = 4;
   const [currentPage, setCurrentPage] = useState<number>(1);
 
@@ -104,6 +110,32 @@ const BigSessionTable: React.FC = () => {
 
   const handleUpdateSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    const newErrors = {
+      title: editingSessionData?.title ? "" : "Title is required",
+      date: editingSessionData?.date ? "" : "Date is required",
+      startTime: editingSessionData?.startTime ? "" : "Start time is required",
+      duration:
+        editingSessionData?.duration &&
+        parseFloat(editingSessionData.duration) > 0
+          ? ""
+          : "Duration must be greater than 0",
+      description: editingSessionData?.description
+        ? ""
+        : "Description is required",
+    };
+
+    setErrors(newErrors);
+
+    if (Object.values(newErrors).some((error) => error)) {
+      Swal.fire(
+        "Validation Error!",
+        "Please fill in all required fields.",
+        "error"
+      );
+      return;
+    }
+
     try {
       if (editingSessionData) {
         await axios.put(
@@ -251,6 +283,11 @@ const BigSessionTable: React.FC = () => {
                               className="input input-bordered w-full"
                               placeholder="Title"
                             />
+                            {errors.title && (
+                              <span className="text-red-500 text-sm">
+                                {errors.title}
+                              </span>
+                            )}
                             <DatePicker
                               selected={
                                 editingSessionData
@@ -272,6 +309,11 @@ const BigSessionTable: React.FC = () => {
                                 new Date(Date.now() + 24 * 60 * 60 * 1000)
                               }
                             />
+                            {errors.date && (
+                              <span className="text-red-500 text-sm">
+                                {errors.date}
+                              </span>
+                            )}
                             <input
                               type="time"
                               value={editingSessionData?.startTime || ""}
@@ -284,6 +326,11 @@ const BigSessionTable: React.FC = () => {
                               className="input input-bordered w-full"
                               placeholder="Start Time"
                             />
+                            {errors.startTime && (
+                              <span className="text-red-500 text-sm">
+                                {errors.startTime}
+                              </span>
+                            )}
                             <input
                               type="text"
                               value={editingSessionData?.duration || ""}
@@ -296,6 +343,11 @@ const BigSessionTable: React.FC = () => {
                               className="input input-bordered w-full"
                               placeholder="Duration"
                             />
+                            {errors.duration && (
+                              <span className="text-red-500 text-sm">
+                                {errors.duration}
+                              </span>
+                            )}
                             <textarea
                               value={editingSessionData?.description || ""}
                               onChange={(e) =>
@@ -307,6 +359,11 @@ const BigSessionTable: React.FC = () => {
                               className="textarea textarea-bordered w-full"
                               placeholder="Description"
                             />
+                            {errors.description && (
+                              <span className="text-red-500 text-sm">
+                                {errors.description}
+                              </span>
+                            )}
                           </div>
                           <div className="mt-4 flex space-x-2">
                             <button type="submit" className="btn btn-primary">

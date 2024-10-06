@@ -115,8 +115,8 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
       name: user?.name || "",
       email: user?.email || "",
       role: user?.role || "Student",
-      batch: user?.batch || "",
-      subGroup: user?.subGroup || "",
+      batch: user?.batch || "1", // Default to "1"
+      subGroup: user?.subGroup || "1", // Default to "1"
     },
   });
 
@@ -143,6 +143,7 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+      {/* Name Field */}
       <div className="space-y-2">
         <Label htmlFor="name">Name:</Label>
         <Controller
@@ -160,11 +161,15 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
         />
         {errors.name && <p className="text-red-500">{errors.name.message}</p>}
       </div>
+
+      {/* Email Field */}
       <div className="space-y-2">
         <Label htmlFor="email">Email:</Label>
         <Input {...register("email")} type="email" />
         {errors.email && <p className="text-red-500">{errors.email.message}</p>}
       </div>
+
+      {/* Role Selection */}
       <div className="space-y-2">
         <Label htmlFor="role">Role:</Label>
         <select
@@ -176,42 +181,45 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
         </select>
         {errors.role && <p className="text-red-500">{errors.role.message}</p>}
       </div>
+
+      {/* Batch and Sub Group Fields for Students */}
       {role === "Student" && (
         <>
           <div className="space-y-2">
             <Label htmlFor="batch">Batch:</Label>
-            <Input
-              {...register("batch")}
-              type="number"
-              min="1"
-              step="1"
-              onChange={(e) => {
-                const value = e.target.value;
-                setValue("batch", value === "" ? "" : value);
-              }}
-            />
+            <select
+              {...register("batch", { required: "Batch is required" })}
+              className="border border-gray-300 rounded p-2 w-full"
+            >
+              {[1, 2, 3, 4, 5, 6, 7, 8].map((batch) => (
+                <option key={batch} value={batch}>
+                  {batch}
+                </option>
+              ))}
+            </select>
             {errors.batch && (
               <p className="text-red-500">{errors.batch.message}</p>
             )}
           </div>
           <div className="space-y-2">
             <Label htmlFor="subGroup">Sub Group:</Label>
-            <Input
-              {...register("subGroup")}
-              type="number"
-              min="1"
-              step="1"
-              onChange={(e) => {
-                const value = e.target.value;
-                setValue("subGroup", value === "" ? "" : value);
-              }}
-            />
+            <select
+              {...register("subGroup", { required: "Sub Group is required" })}
+              className="border border-gray-300 rounded p-2 w-full"
+            >
+              {[1, 2].map((group) => (
+                <option key={group} value={group}>
+                  {group}
+                </option>
+              ))}
+            </select>
             {errors.subGroup && (
               <p className="text-red-500">{errors.subGroup.message}</p>
             )}
           </div>
         </>
       )}
+
       <Button
         type="submit"
         className="bg-blue-500 hover:bg-blue-600 text-white"

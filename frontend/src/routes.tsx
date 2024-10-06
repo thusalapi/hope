@@ -14,6 +14,7 @@ import ReviewSubmissionPage from "./pages/ReviewSubmissionPage";
 import UserManagement from "./pages/UserManagement";
 import InstructorSessionsPage from "./pages/InstructorSessionsPage";
 import InstructorSession from "./pages/InstructorSession";
+import SessionList from "./components/Extension/SessionList";
 
 const router = createBrowserRouter([
   {
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
   {
     path: "/reviewsubmission",
     element: <ReviewSubmissionPage />,
+  },
+  {
+    path: "/sessionlist",
+    element: <SessionList />,
   },
 ]);
 

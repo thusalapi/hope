@@ -1,5 +1,5 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useEffect } from "react";
+import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createUser, updateUser } from "../../services/userApi";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Swal from "sweetalert2";
 
 interface User {
   _id?: string;
@@ -24,22 +25,31 @@ interface UserFormProps {
 
 const userSchema = z
   .object({
-    name: z.string().min(1, "Name is required"),
-    email: z.string().email("Invalid email"),
+    name: z
+      .string()
+      .min(2, "Name must be at least 2 characters long")
+      .max(50, "Name must be at most 50 characters long")
+      .regex(/^[a-zA-Z\s]*$/, "Name can only contain letters and spaces"),
+    email: z.string().email("Invalid email format"),
     role: z.enum(["Student", "Instructor"]),
-    batch: z.string(),
-    subGroup: z.string(),
+    batch: z.string().optional(),
+    subGroup: z.string().optional(),
   })
   .refine(
     (data) => {
-      if (data.role === "Instructor") {
-        return data.batch === "-" && data.subGroup === "-";
+      if (data.role === "Student") {
+        return (
+          data.batch !== undefined &&
+          data.batch !== "" &&
+          data.subGroup !== undefined &&
+          data.subGroup !== ""
+        );
       }
-      return data.batch !== "" && data.subGroup !== "";
+      return true;
     },
     {
-      message: "Batch and Sub Group are required for Students.",
-      path: ["role"],
+      message: "Batch and Sub Group are required for Students",
+      path: ["batch", "subGroup"],
     }
   );
 
@@ -53,6 +63,19 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       onFormSubmit();
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "User created successfully",
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to create user. Please try again.",
+      });
+      console.error("Error creating user:", error);
     },
   });
 
@@ -62,17 +85,32 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       onFormSubmit();
+      Swal.fire({
+        icon: "success",
+        title: "Success!",
+        text: "User updated successfully",
+      });
+    },
+    onError: (error) => {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Failed to update user. Please try again.",
+      });
+      console.error("Error updating user:", error);
     },
   });
 
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    control,
+    formState: { errors, isSubmitting },
     watch,
     setValue,
   } = useForm<UserFormData>({
     resolver: zodResolver(userSchema),
+    mode: "onChange",
     defaultValues: {
       name: user?.name || "",
       email: user?.email || "",
@@ -84,11 +122,8 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
 
   const role = watch("role");
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (role === "Instructor") {
-      setValue("batch", "-");
-      setValue("subGroup", "-");
-    } else {
       setValue("batch", "");
       setValue("subGroup", "");
     }
@@ -110,7 +145,19 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       <div className="space-y-2">
         <Label htmlFor="name">Name:</Label>
-        <Input {...register("name")} />
+        <Controller
+          name="name"
+          control={control}
+          render={({ field }) => (
+            <Input
+              {...field}
+              onChange={(e) => {
+                const value = e.target.value.replace(/[^a-zA-Z\s]/g, "");
+                field.onChange(value);
+              }}
+            />
+          )}
+        />
         {errors.name && <p className="text-red-500">{errors.name.message}</p>}
       </div>
       <div className="space-y-2">
@@ -129,21 +176,46 @@ const UserForm: React.FC<UserFormProps> = ({ user, onFormSubmit }) => {
         </select>
         {errors.role && <p className="text-red-500">{errors.role.message}</p>}
       </div>
-      <div className="space-y-2">
-        <Label htmlFor="batch">Batch:</Label>
-        <Input {...register("batch")} disabled={role === "Instructor"} />
-        {errors.batch && <p className="text-red-500">{errors.batch.message}</p>}
-      </div>
-      <div className="space-y-2">
-        <Label htmlFor="subGroup">Sub Group:</Label>
-        <Input {...register("subGroup")} disabled={role === "Instructor"} />
-        {errors.subGroup && (
-          <p className="text-red-500">{errors.subGroup.message}</p>
-        )}
-      </div>
+      {role === "Student" && (
+        <>
+          <div className="space-y-2">
+            <Label htmlFor="batch">Batch:</Label>
+            <Input
+              {...register("batch")}
+              type="number"
+              min="1"
+              step="1"
+              onChange={(e) => {
+                const value = e.target.value;
+                setValue("batch", value === "" ? "" : value);
+              }}
+            />
+            {errors.batch && (
+              <p className="text-red-500">{errors.batch.message}</p>
+            )}
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="subGroup">Sub Group:</Label>
+            <Input
+              {...register("subGroup")}
+              type="number"
+              min="1"
+              step="1"
+              onChange={(e) => {
+                const value = e.target.value;
+                setValue("subGroup", value === "" ? "" : value);
+              }}
+            />
+            {errors.subGroup && (
+              <p className="text-red-500">{errors.subGroup.message}</p>
+            )}
+          </div>
+        </>
+      )}
       <Button
         type="submit"
         className="bg-blue-500 hover:bg-blue-600 text-white"
+        disabled={isSubmitting}
       >
         {user ? "Update User" : "Create User"}
       </Button>

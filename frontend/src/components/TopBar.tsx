@@ -23,7 +23,7 @@ const TopBar: React.FC = () => {
   if (loading) return null;
 
   return (
-    <nav className="fixed top-0 left-0 w-full bg-primary-content shadow-md rounded-b-lg">
+    <nav className="fixed top-0 left-0 w-full bg-primary-content rounded-b-lg">
       <div className="max-w-screen-xl mx-auto px-4 py-4 flex justify-between items-center">
         <div className="flex justify-end flex-1">
           <input

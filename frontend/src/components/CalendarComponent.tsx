@@ -4,6 +4,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import axios from "axios";
+import { PlusIcon } from "@radix-ui/react-icons";
 
 const localizer = momentLocalizer(moment);
 
@@ -16,6 +17,7 @@ interface Event {
 
 const CalendarComponent = () => {
   const [events, setEvents] = useState<Event[]>([]);
+  const [showEventForm, setShowEventForm] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [token, setToken] = useState<string | null>(null);
   const [newEvent, setNewEvent] = useState({
@@ -65,6 +67,17 @@ const CalendarComponent = () => {
     } catch (error) {
       console.error("Error fetching events:", error);
     }
+  };
+
+  const eventStyleGetter = (event: Event) => {
+    return {
+      style: {
+        backgroundColor: "#4285F4",
+        color: "white",
+        border: "none",
+        borderRadius: "4px",
+      },
+    };
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -121,106 +134,135 @@ const CalendarComponent = () => {
   };
 
   return (
-    <div>
+    <div className="flex flex-col h-screen bg-gray-100">
       {!isAuthenticated ? (
-        <button
-          onClick={() => login()}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Load Google Calendar
-        </button>
+        <div className="flex items-center justify-center h-full">
+          <button
+            onClick={() => login()}
+            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded shadow transition duration-150 ease-in-out"
+          >
+            Sign in with Google
+          </button>
+        </div>
       ) : (
-        <>
-          <>
-            <form
-              onSubmit={createEvent}
-              className="space-y-6 p-6 bg-white shadow-md rounded-lg mt-10 max-w-lg mx-auto"
+        <div className="flex flex-col h-full">
+          <header className="bg-white shadow-sm p-4 flex justify-between items-center">
+            <h1 className="text-2xl font-semibold text-gray-800">Calendar</h1>
+            <button
+              onClick={() => setShowEventForm(true)}
+              className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full shadow transition duration-150 ease-in-out flex items-center"
             >
-              <div>
-                <label
-                  htmlFor="summary"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Event Title
-                </label>
-                <input
-                  type="text"
-                  name="summary"
-                  id="summary"
-                  value={newEvent.summary}
-                  onChange={handleInputChange}
-                  placeholder="Add title"
-                  required
-                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="description"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Description
-                </label>
-                <input
-                  type="text"
-                  name="description"
-                  id="description"
-                  value={newEvent.description}
-                  onChange={handleInputChange}
-                  placeholder="Add description"
-                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="startDateTime"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  Start Date & Time
-                </label>
-                <input
-                  type="datetime-local"
-                  name="startDateTime"
-                  id="startDateTime"
-                  value={newEvent.startDateTime}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="endDateTime"
-                  className="block text-sm font-medium text-gray-700"
-                >
-                  End Date & Time
-                </label>
-                <input
-                  type="datetime-local"
-                  name="endDateTime"
-                  id="endDateTime"
-                  value={newEvent.endDateTime}
-                  onChange={handleInputChange}
-                  required
-                  className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
+              <PlusIcon className="mr-2" />
+              Create
+            </button>
+          </header>
+          <main className="flex-grow p-6">
+            <Calendar
+              localizer={localizer}
+              events={events}
+              startAccessor="start"
+              endAccessor="end"
+              style={{ height: "calc(100vh - 120px)" }}
+              eventPropGetter={eventStyleGetter}
+              className="bg-white shadow-lg rounded-lg"
+            />
+          </main>
+        </div>
+      )}
+
+      {showEventForm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+          <form
+            onSubmit={createEvent}
+            className="bg-white rounded-lg p-6 w-full max-w-md"
+          >
+            <h2 className="text-xl font-semibold mb-4">Create New Event</h2>
+            <div className="mb-4">
+              <label
+                htmlFor="summary"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Event Title
+              </label>
+              <input
+                type="text"
+                name="summary"
+                id="summary"
+                value={newEvent.summary}
+                onChange={handleInputChange}
+                placeholder="Add title"
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="description"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Description
+              </label>
+              <input
+                type="text"
+                name="description"
+                id="description"
+                value={newEvent.description}
+                onChange={handleInputChange}
+                placeholder="Add description"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="mb-4">
+              <label
+                htmlFor="startDateTime"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Start Date & Time
+              </label>
+              <input
+                type="datetime-local"
+                name="startDateTime"
+                id="startDateTime"
+                value={newEvent.startDateTime}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="mb-6">
+              <label
+                htmlFor="endDateTime"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                End Date & Time
+              </label>
+              <input
+                type="datetime-local"
+                name="endDateTime"
+                id="endDateTime"
+                value={newEvent.endDateTime}
+                onChange={handleInputChange}
+                required
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              />
+            </div>
+            <div className="flex justify-end space-x-2">
+              <button
+                type="button"
+                onClick={() => setShowEventForm(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition duration-150 ease-in-out"
+              >
+                Cancel
+              </button>
               <button
                 type="submit"
-                className="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-600 rounded-md transition duration-150 ease-in-out"
               >
                 Save
               </button>
-            </form>
-          </>
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ height: 500, margin: "50px" }}
-          />
-        </>
+            </div>
+          </form>
+        </div>
       )}
     </div>
   );

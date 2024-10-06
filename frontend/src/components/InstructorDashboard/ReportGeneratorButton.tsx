@@ -70,7 +70,7 @@ function ReportGeneratorButton() {
 
     doc
       .setFontSize(20)
-      .setTextColor(56, 119, 91)
+      .setTextColor("#2148C0")
       .setFont("helvetica", "bold")
       .text("Session Report", margin, 70);
     doc

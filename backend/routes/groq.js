@@ -4,7 +4,8 @@ const dotenv = require('dotenv');
 // Load environment variables from .env file
 dotenv.config();
 
-const groq = new Groq({ apiKey: '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' });
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
+const groq = new Groq({ apiKey: GROQ_API_KEY });
 
 async function main() {
   try {
